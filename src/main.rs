@@ -160,11 +160,13 @@ fn main() -> Result<(), Box<dyn Error>> {
         .unwrap();
 
     let mut projects_dir = "";
+    let mut launch_command = "";
 
     for (setting, value) in &settings {
-        println!("{:?}", setting);
         if setting == "projects_dir" {
             projects_dir = value;
+        } else {
+            launch_command = value;
         }
     }
 
@@ -196,7 +198,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     let app = App::new(entries);
 
 
-    let res = run_app(&mut terminal, app, tick_rate, target_dir);
+    let res = run_app(&mut terminal, app, tick_rate, target_dir, launch_command);
 
     disable_raw_mode()?;
     execute!(
@@ -218,6 +220,7 @@ fn run_app<B: Backend>(
     mut app: App,
     tick_rate: Duration,
     target_dir: &Path,
+    launch_command: &str,
 ) -> io::Result<()> {
     let mut last_tick = Instant::now();
     loop {
@@ -249,7 +252,7 @@ fn run_app<B: Backend>(
                         //     Command::new("kill").args([line]).spawn();
                         // }
 
-                        Command::new("nvim")
+                        Command::new(launch_command)
                             .args([target_dir.to_str().unwrap().to_owned()
                                 + "/"
                                 + &app.items.items[app.items.state.selected().unwrap()]
