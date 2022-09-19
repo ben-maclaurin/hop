@@ -274,6 +274,7 @@ fn run_app<B: Backend>(
 
 fn ui<B: Backend>(f: &mut Frame<B>, app: &mut App) {
     let chunks = Layout::default()
+        .margin(2)
         .direction(Direction::Horizontal)
         .constraints([Constraint::Percentage(100), Constraint::Percentage(100)].as_ref())
         .split(f.size());
@@ -310,9 +311,9 @@ fn ui<B: Backend>(f: &mut Frame<B>, app: &mut App) {
         .highlight_style(
             Style::default()
                 .bg(Color::Cyan)
-                .fg(Color::Black)
-                .add_modifier(Modifier::BOLD),
+                .fg(Color::Black),
         );
+
 
     f.render_stateful_widget(items, chunks[0], &mut app.items.state);
 }
