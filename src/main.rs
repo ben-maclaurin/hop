@@ -19,7 +19,7 @@ use std::{
 use tui::{
     backend::{Backend, CrosstermBackend},
     layout::{Constraint, Direction, Layout},
-    style::{Color, Modifier, Style},
+    style::{Color, Style},
     text::Spans,
     widgets::{Block, Borders, List, ListItem, ListState},
     Frame, Terminal,
@@ -99,6 +99,41 @@ impl App {
 
         App {
             items: StatefulList::with_items(items),
+        }
+    }
+}
+
+pub mod configuration {
+    use directories::BaseDirs;
+    use std::collections::HashMap;
+    use config::Config;
+
+    struct Configuration<'a> {
+        projects_dir: &'a String,
+        launch_command: &'a String
+    }
+
+    impl<'a> Configuration<'a> {
+        pub fn init(&mut self) {
+            let base_dirs = BaseDirs::new().unwrap();
+            let home_dir = base_dirs.home_dir();
+
+            let config = Config::builder()
+                .add_source(config::File::with_name(&(String::from(home_dir.to_str().unwrap()) + "/.config/jump/jump.yml")))
+                .add_source(config::Environment::with_prefix("APP"))
+                .build()
+                .unwrap();
+
+            let config = config
+                .try_deserialize::<HashMap<String, String>>()
+                .unwrap();
+
+            for (name, value) in &config {
+                match name.as_str() {
+                    "projects_dir" => self.projects_dir = value,
+                    _ => self.launch_command = value,
+                }
+            }
         }
     }
 }
@@ -223,6 +258,15 @@ fn run_app<B: Backend>(
     }
 }
 
+pub mod ui {
+}
+
+pub mod test {
+    fn get_name() -> String {
+        "test".to_owned()
+    }
+}
+
 fn ui<B: Backend>(f: &mut Frame<B>, app: &mut App) {
     let chunks = Layout::default()
         .margin(2)
@@ -230,23 +274,6 @@ fn ui<B: Backend>(f: &mut Frame<B>, app: &mut App) {
         .constraints([Constraint::Percentage(100), Constraint::Percentage(100)].as_ref())
         .split(f.size());
 
-    // Reset,
-    // Black,
-    // Red,
-    // Green,
-    // Yellow,
-    // Blue,
-    // Magenta,
-    // Cyan,
-    // Gray,
-    // DarkGray,
-    // LightRed,
-    // LightGreen,
-    // LightYellow,
-    // LightBlue,
-    // LightMagenta,
-    // LightCyan,
-    // White,
     let items: Vec<ListItem> = app
         .items
         .items
@@ -258,7 +285,7 @@ fn ui<B: Backend>(f: &mut Frame<B>, app: &mut App) {
         .collect();
 
     let items = List::new(items)
-        .block(Block::default().borders(Borders::ALL).title("Projects"))
+        .block(Block::default().borders(Borders::ALL).title("Project directories"))
         .highlight_style(
             Style::default()
                 .bg(Color::Cyan)
