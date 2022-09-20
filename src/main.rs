@@ -4,7 +4,6 @@ use crossterm::{
     terminal::{disable_raw_mode, enable_raw_mode, EnterAlternateScreen, LeaveAlternateScreen},
 };
 use std::process::Command;
-use std::str;
 use std::{
     error::Error,
     io,
@@ -12,12 +11,12 @@ use std::{
 };
 use tui::{
     backend::{Backend, CrosstermBackend},
-    widgets::ListState,Terminal,
+    Terminal,
 };
 
 mod configuration;
-mod ui;
 mod directory_manager;
+mod ui;
 use configuration::Configuration;
 use directory_manager::{get_entries, get_home_dir};
 use ui::{ui, App};
@@ -38,16 +37,7 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     let app = App::new(get_entries(jump_config.clone()).unwrap());
 
-    let projects_dir =
-        get_home_dir().to_str().unwrap().to_owned() + "/" + &jump_config.projects_dir;
-    let res = run_app(
-        &mut terminal,
-        app,
-        tick_rate,
-        projects_dir,
-        &jump_config.launch_command,
-        &jump_config.title,
-    );
+    let res = run_app(&mut terminal, app, tick_rate, jump_config);
 
     disable_raw_mode()?;
     execute!(
@@ -68,13 +58,14 @@ fn run_app<B: Backend>(
     terminal: &mut Terminal<B>,
     mut app: App,
     tick_rate: Duration,
-    projects_dir: String,
-    launch_command: &str,
-    title: &String,
+    config: Configuration,
 ) -> io::Result<()> {
     let mut last_tick = Instant::now();
+
+    let projects_dir = get_home_dir().to_str().unwrap().to_owned() + "/" + &config.projects_dir;
+
     loop {
-        terminal.draw(|f| ui(f, &mut app, title))?;
+        terminal.draw(|f| ui(f, &mut app, &config.title))?;
 
         let timeout = tick_rate
             .checked_sub(last_tick.elapsed())
@@ -87,18 +78,14 @@ fn run_app<B: Backend>(
                     KeyCode::Char('j') => app.items.next(),
                     KeyCode::Char('k') => app.items.previous(),
                     KeyCode::Enter => {
-                        println!(
-                            "selected is: {:?}",
-                            app.items.items[app.items.state.selected().unwrap()]
-                        );
-
-                        Command::new(launch_command)
+                        Command::new(config.launch_command)
                             .args([projects_dir
                                 + "/"
                                 + &app.items.items[app.items.state.selected().unwrap()]
                                 + "/"])
                             .spawn()?
-                            .wait();
+                            .wait()
+                            .unwrap();
 
                         return Ok(());
                     }
@@ -111,4 +98,3 @@ fn run_app<B: Backend>(
         }
     }
 }
-

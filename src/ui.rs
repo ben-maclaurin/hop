@@ -1,12 +1,12 @@
+use std::path::PathBuf;
 use tui::{
     backend::Backend,
     layout::{Constraint, Direction, Layout},
     style::{Color, Style},
     text::Spans,
-    widgets::{ListState, Block, Borders, List, ListItem},
+    widgets::{Block, Borders, List, ListItem, ListState},
     Frame,
 };
-use std::path::PathBuf;
 
 pub struct StatefulList<T> {
     pub state: ListState,
