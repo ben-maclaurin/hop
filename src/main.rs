@@ -7,7 +7,6 @@ use crossterm::{
 };
 use directories::BaseDirs;
 use std::collections::HashMap;
-use std::fs;
 use std::str;
 use std::path::{Path, PathBuf};
 use std::process::Command;
@@ -103,8 +102,8 @@ impl App {
     }
 }
 
+
 pub mod configuration {
-    use directories::BaseDirs;
     use std::collections::HashMap;
     use config::Config;
 
@@ -122,11 +121,10 @@ pub mod configuration {
 
     impl Configuration {
         pub fn init(&mut self) {
-            let base_dirs = BaseDirs::new().unwrap();
-            let home_dir = base_dirs.home_dir();
+            let directory_manager = crate::directory_manager::DirectoryManager::default();
 
             let config = Config::builder()
-                .add_source(config::File::with_name(&(String::from(home_dir.to_str().unwrap()) + "/.config/jump/jump.yml")))
+                .add_source(config::File::with_name(&(String::from(directory_manager.home_dir.to_str().unwrap()) + "/.config/jump/jump.yml")))
                 .add_source(config::Environment::with_prefix("APP"))
                 .build()
                 .unwrap();
@@ -145,26 +143,58 @@ pub mod configuration {
     }
 }
 
+pub mod directory_manager {
+    use directories::BaseDirs;
+    use std::path::{Path, PathBuf};
+    use std::fs;
+    use std::{
+        error::Error,
+        io,
+    };
+
+    pub struct DirectoryManager<'a> {
+        pub home_dir: &'a Path,
+    }
+
+    impl<'a> Default for DirectoryManager<'a> {
+        fn default() -> Self {
+            Self {
+                home_dir: BaseDirs::new().unwrap().home_dir(),
+            }
+        }
+    }
+
+    pub fn get_entries(config: crate::configuration::Configuration) -> Result<Vec<PathBuf>, std::io::Error> {
+        let directory = self::DirectoryManager::default();
+
+        let home_dir = directory.home_dir.to_str().unwrap().to_owned() + "/" + &config.projects_dir;
+
+        let target_dir = Path::new(&home_dir);
+
+        let entries = fs::read_dir(target_dir)?
+            .map(|res| res.map(|e| e.path()))
+            .collect::<Result<Vec<_>, io::Error>>();
+
+        entries
+    }
+
+    // let base_dirs = BaseDirs::new().unwrap();
+
+    // let home_dir = base_dirs.home_dir();
+
+    // let home_dir = home_dir.to_str().unwrap().to_owned() + "/" + &jump_config.projects_dir;
+    // let target_dir = Path::new(&home_dir);
+
+    // let entries = fs::read_dir(target_dir)?
+    //     .map(|res| res.map(|e| e.path()))
+    //     .collect::<Result<Vec<_>, io::Error>>()?;
+
+}
+
 fn main() -> Result<(), Box<dyn Error>> {
     let mut jump_config = configuration::Configuration::default();
 
     jump_config.init();
-
-    // ///////////////////////////
-    // Dir management
-    // ///////////////////////////
-    let base_dirs = BaseDirs::new().unwrap();
-
-    let home_dir = base_dirs.home_dir();
-
-    let home_dir = home_dir.to_str().unwrap().to_owned() + "/" + &jump_config.projects_dir;
-    let target_dir = Path::new(&home_dir);
-
-    // println!("target dir is {:?}", target_dir);
-
-    let entries = fs::read_dir(target_dir)?
-        .map(|res| res.map(|e| e.path()))
-        .collect::<Result<Vec<_>, io::Error>>()?;
 
     // setup terminal
     enable_raw_mode()?;
@@ -174,8 +204,12 @@ fn main() -> Result<(), Box<dyn Error>> {
     let mut terminal = Terminal::new(backend)?;
 
     let tick_rate = Duration::from_millis(250);
-    let app = App::new(entries);
 
+    let directory_manager = directory_manager::DirectoryManager::default();
+
+    let app = App::new(directory_manager::get_entries(jump_config.clone()).unwrap());
+
+    let target_dir = Path::new(directory_manager.home_dir);
 
     let res = run_app(&mut terminal, app, tick_rate, target_dir, &jump_config.launch_command);
 
