@@ -77,13 +77,12 @@ impl<T> StatefulList<T> {
 ///
 /// Check the event handling at the bottom to see how to change the state on incoming events.
 /// Check the drawing logic for items on how to specify the highlighting style for selected items.
-struct App<'a> {
+struct App {
     items: StatefulList<String>,
-    events: Vec<(&'a str, &'a str)>,
 }
 
-impl<'a> App<'a> {
-    fn new(entries: Vec<PathBuf>) -> App<'a> {
+impl App {
+    fn new(entries: Vec<PathBuf>) -> App {
         let mut items = Vec::<String>::new();
         for entry in entries {
             items.push(
@@ -98,46 +97,9 @@ impl<'a> App<'a> {
             );
         }
 
-        //println!("{:?}", items);
-
         App {
             items: StatefulList::with_items(items),
-            events: vec![
-                ("Event1", "INFO"),
-                ("Event2", "INFO"),
-                ("Event3", "CRITICAL"),
-                ("Event4", "ERROR"),
-                ("Event5", "INFO"),
-                ("Event6", "INFO"),
-                ("Event7", "WARNING"),
-                ("Event8", "INFO"),
-                ("Event9", "INFO"),
-                ("Event10", "INFO"),
-                ("Event11", "CRITICAL"),
-                ("Event12", "INFO"),
-                ("Event13", "INFO"),
-                ("Event14", "INFO"),
-                ("Event15", "INFO"),
-                ("Event16", "INFO"),
-                ("Event17", "ERROR"),
-                ("Event18", "ERROR"),
-                ("Event19", "INFO"),
-                ("Event20", "INFO"),
-                ("Event21", "WARNING"),
-                ("Event22", "INFO"),
-                ("Event23", "INFO"),
-                ("Event24", "WARNING"),
-                ("Event25", "INFO"),
-                ("Event26", "INFO"),
-            ],
         }
-    }
-
-    /// Rotate through the event list.
-    /// This only exists to simulate some kind of "progress"
-    fn on_tick(&mut self) {
-        let event = self.events.remove(0);
-        self.events.push(event);
     }
 }
 
@@ -256,7 +218,6 @@ fn run_app<B: Backend>(
             }
         }
         if last_tick.elapsed() >= tick_rate {
-            app.on_tick();
             last_tick = Instant::now();
         }
     }
