@@ -1,14 +1,10 @@
-#![feature(allocator_api)]
-use config::Config;
 use crossterm::{
     event::{self, DisableMouseCapture, EnableMouseCapture, Event, KeyCode},
     execute,
     terminal::{disable_raw_mode, enable_raw_mode, EnterAlternateScreen, LeaveAlternateScreen},
 };
-use directories::BaseDirs;
-use std::collections::HashMap;
 use std::str;
-use std::path::{Path, PathBuf};
+use std::path::PathBuf;
 use std::process::Command;
 use std::{
     error::Error,
@@ -23,6 +19,11 @@ use tui::{
     widgets::{Block, Borders, List, ListItem, ListState},
     Frame, Terminal,
 };
+
+mod configuration;
+mod directory_manager;
+use configuration::Configuration;
+use directory_manager::{get_entries, get_home_dir};
 
 struct StatefulList<T> {
     state: ListState,
@@ -70,12 +71,6 @@ impl<T> StatefulList<T> {
     }
 }
 
-/// This struct holds the current state of the app. In particular, it has the `items` field which is a wrapper
-/// around `ListState`. Keeping track of the items state let us render the associated widget with its state
-/// and have access to features such as natural scrolling.
-///
-/// Check the event handling at the bottom to see how to change the state on incoming events.
-/// Check the drawing logic for items on how to specify the highlighting style for selected items.
 struct App {
     items: StatefulList<String>,
 }
@@ -102,102 +97,13 @@ impl App {
     }
 }
 
-
-pub mod configuration {
-    use std::collections::HashMap;
-    use config::Config;
-
-    #[derive(Clone)]
-    pub struct Configuration {
-        pub projects_dir: String,
-        pub launch_command: String
-    }
-
-    impl Default for Configuration {
-        fn default () -> Self {
-            Self {projects_dir: String::from(""), launch_command: String::from("")}
-        }
-    }
-
-    impl Configuration {
-        pub fn init(&mut self) {
-            let directory_manager = crate::directory_manager::DirectoryManager::default();
-
-            let config = Config::builder()
-                .add_source(config::File::with_name(&(String::from(directory_manager.home_dir.to_str().unwrap()) + "/.config/jump/jump.yml")))
-                .add_source(config::Environment::with_prefix("APP"))
-                .build()
-                .unwrap();
-
-            let config = config
-                .try_deserialize::<HashMap<String, String>>()
-                .unwrap();
-
-            for (name, value) in config {
-                match name.as_str() {
-                    "projects_dir" => self.projects_dir = value,
-                    _ => self.launch_command = value,
-                }
-            }
-        }
-    }
-}
-
-pub mod directory_manager {
-    use directories::BaseDirs;
-    use std::path::{Path, PathBuf};
-    use std::fs;
-    use std::{
-        error::Error,
-        io,
-    };
-
-    pub struct DirectoryManager<'a> {
-        pub home_dir: &'a Path,
-    }
-
-    impl<'a> Default for DirectoryManager<'a> {
-        fn default() -> Self {
-            Self {
-                home_dir: BaseDirs::new().unwrap().home_dir(),
-            }
-        }
-    }
-
-    pub fn get_entries(config: crate::configuration::Configuration) -> Result<Vec<PathBuf>, std::io::Error> {
-        let directory = self::DirectoryManager::default();
-
-        let home_dir = directory.home_dir.to_str().unwrap().to_owned() + "/" + &config.projects_dir;
-
-        let target_dir = Path::new(&home_dir);
-
-        let entries = fs::read_dir(target_dir)?
-            .map(|res| res.map(|e| e.path()))
-            .collect::<Result<Vec<_>, io::Error>>();
-
-        entries
-    }
-
-    // let base_dirs = BaseDirs::new().unwrap();
-
-    // let home_dir = base_dirs.home_dir();
-
-    // let home_dir = home_dir.to_str().unwrap().to_owned() + "/" + &jump_config.projects_dir;
-    // let target_dir = Path::new(&home_dir);
-
-    // let entries = fs::read_dir(target_dir)?
-    //     .map(|res| res.map(|e| e.path()))
-    //     .collect::<Result<Vec<_>, io::Error>>()?;
-
-}
-
 fn main() -> Result<(), Box<dyn Error>> {
-    let mut jump_config = configuration::Configuration::default();
+    let mut jump_config = Configuration::default();
 
     jump_config.init();
 
-    // setup terminal
     enable_raw_mode()?;
+
     let mut stdout = io::stdout();
     execute!(stdout, EnterAlternateScreen, EnableMouseCapture)?;
     let backend = CrosstermBackend::new(stdout);
@@ -205,13 +111,10 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     let tick_rate = Duration::from_millis(250);
 
-    let directory_manager = directory_manager::DirectoryManager::default();
+    let app = App::new(get_entries(jump_config.clone()).unwrap());
 
-    let app = App::new(directory_manager::get_entries(jump_config.clone()).unwrap());
-
-    let target_dir = Path::new(directory_manager.home_dir);
-
-    let res = run_app(&mut terminal, app, tick_rate, target_dir, &jump_config.launch_command);
+    let projects_dir = get_home_dir().to_str().unwrap().to_owned() + "/" + &jump_config.projects_dir;
+    let res = run_app(&mut terminal, app, tick_rate, projects_dir, &jump_config.launch_command);
 
     disable_raw_mode()?;
     execute!(
@@ -232,7 +135,7 @@ fn run_app<B: Backend>(
     terminal: &mut Terminal<B>,
     mut app: App,
     tick_rate: Duration,
-    target_dir: &Path,
+    projects_dir: String,
     launch_command: &str,
 ) -> io::Result<()> {
     let mut last_tick = Instant::now();
@@ -256,7 +159,7 @@ fn run_app<B: Backend>(
                         );
 
                         Command::new(launch_command)
-                            .args([target_dir.to_str().unwrap().to_owned()
+                            .args([projects_dir
                                 + "/"
                                 + &app.items.items[app.items.state.selected().unwrap()]
                                 + "/"])
@@ -271,15 +174,6 @@ fn run_app<B: Backend>(
         if last_tick.elapsed() >= tick_rate {
             last_tick = Instant::now();
         }
-    }
-}
-
-pub mod ui {
-}
-
-pub mod test {
-    fn get_name() -> String {
-        "test".to_owned()
     }
 }
 
