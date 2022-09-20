@@ -242,16 +242,6 @@ fn run_app<B: Backend>(
                             app.items.items[app.items.state.selected().unwrap()]
                         );
 
-                        // let output = Command::new("pgrep").args(["nvim"]).output();
-
-                        // println!("output is {:?}", output);
-
-                        // for line in str::from_utf8(&output.unwrap().stdout).unwrap().split("\n").into_iter() {
-                        //     println!("hello!");
-                        //     println!("line is {}", line);
-                        //     Command::new("kill").args([line]).spawn();
-                        // }
-
                         Command::new(launch_command)
                             .args([target_dir.to_str().unwrap().to_owned()
                                 + "/"
