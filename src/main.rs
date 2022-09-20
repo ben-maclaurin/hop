@@ -108,12 +108,19 @@ pub mod configuration {
     use std::collections::HashMap;
     use config::Config;
 
-    struct Configuration<'a> {
-        projects_dir: &'a String,
-        launch_command: &'a String
+    #[derive(Clone)]
+    pub struct Configuration {
+        pub projects_dir: String,
+        pub launch_command: String
     }
 
-    impl<'a> Configuration<'a> {
+    impl Default for Configuration {
+        fn default () -> Self {
+            Self {projects_dir: String::from(""), launch_command: String::from("")}
+        }
+    }
+
+    impl Configuration {
         pub fn init(&mut self) {
             let base_dirs = BaseDirs::new().unwrap();
             let home_dir = base_dirs.home_dir();
@@ -128,7 +135,7 @@ pub mod configuration {
                 .try_deserialize::<HashMap<String, String>>()
                 .unwrap();
 
-            for (name, value) in &config {
+            for (name, value) in config {
                 match name.as_str() {
                     "projects_dir" => self.projects_dir = value,
                     _ => self.launch_command = value,
@@ -139,34 +146,9 @@ pub mod configuration {
 }
 
 fn main() -> Result<(), Box<dyn Error>> {
-    // ///////////////////////////
-    // Read settings in
-    // ///////////////////////////
-    let base_dirs = BaseDirs::new().unwrap();
+    let mut jump_config = configuration::Configuration::default();
 
-    let home_dir = base_dirs.home_dir();
-
-    let settings = Config::builder()
-        .add_source(config::File::with_name(&(String::from(home_dir.to_str().unwrap()) + "/.config/jump/jump.yml")))
-        .add_source(config::Environment::with_prefix("APP"))
-        .build()
-        .unwrap();
-
-    let settings = settings
-        .try_deserialize::<HashMap<String, String>>()
-        .unwrap();
-
-    let mut projects_dir = "";
-    let mut launch_command = "";
-
-    for (setting, value) in &settings {
-        if setting == "projects_dir" {
-            projects_dir = value;
-        } else {
-            launch_command = value;
-        }
-    }
-
+    jump_config.init();
 
     // ///////////////////////////
     // Dir management
@@ -175,7 +157,7 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     let home_dir = base_dirs.home_dir();
 
-    let home_dir = home_dir.to_str().unwrap().to_owned() + "/" + projects_dir;
+    let home_dir = home_dir.to_str().unwrap().to_owned() + "/" + &jump_config.projects_dir;
     let target_dir = Path::new(&home_dir);
 
     // println!("target dir is {:?}", target_dir);
@@ -195,7 +177,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     let app = App::new(entries);
 
 
-    let res = run_app(&mut terminal, app, tick_rate, target_dir, launch_command);
+    let res = run_app(&mut terminal, app, tick_rate, target_dir, &jump_config.clone().launch_command);
 
     disable_raw_mode()?;
     execute!(
