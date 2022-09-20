@@ -1,7 +1,7 @@
 use directories::BaseDirs;
-use std::path::{Path, PathBuf};
 use std::fs;
 use std::io;
+use std::path::{Path, PathBuf};
 
 use crate::configuration::Configuration;
 
