@@ -17,6 +17,7 @@ use tui::{
 mod configuration;
 mod directory_manager;
 mod ui;
+mod icon;
 use configuration::Configuration;
 use directory_manager::{get_entries, get_home_dir};
 use ui::{ui, App};
