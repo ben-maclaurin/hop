@@ -177,7 +177,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     let app = App::new(entries);
 
 
-    let res = run_app(&mut terminal, app, tick_rate, target_dir, &jump_config.clone().launch_command);
+    let res = run_app(&mut terminal, app, tick_rate, target_dir, &jump_config.launch_command);
 
     disable_raw_mode()?;
     execute!(
