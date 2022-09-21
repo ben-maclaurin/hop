@@ -22,7 +22,18 @@ fn github_linguist(path: String) -> Result<String, io::Error> {
         let output = Command::new("github-linguist").args([path.clone()]).output();
 
         match output {
-            Ok(_) => return Ok("command ran ".to_string()),
+            Ok(_) => {
+                 match str::from_utf8(&output.unwrap().stdout) {
+                     Ok(output) => {
+                         if output.len() >= 3 {
+                            return Ok(output.split_whitespace().collect::<Vec<_>>()[2].to_string())
+                         } else {
+                             return Ok("some issue i guess".to_string())
+                         }
+                     },
+                    Err(e) => return Ok("not a repo".to_string()),
+                };
+            },
             Err(e) => return Ok("command did not run ".to_string()),
         }
     } else {
