@@ -22,6 +22,14 @@ impl<T> StatefulList<T> {
         }
     }
 
+    pub fn first(&mut self) {
+        self.state.select(Some(0));
+    }
+
+    pub fn last(&mut self) {
+        self.state.select(Some(self.items.len() - 1));
+    }
+
     pub fn next(&mut self) {
         let i = match self.state.selected() {
             Some(i) => {
@@ -110,7 +118,7 @@ pub fn ui<B: Backend>(f: &mut Frame<B>, app: &mut App, title: &String) {
                 .borders(Borders::ALL)
                 .title(title.to_owned()),
         )
-        .highlight_style(Style::default().bg(Color::Rgb(84, 84, 109)));
+        .highlight_style(Style::default().bg(Color::Rgb(22, 22, 29)));
 
     f.render_stateful_widget(items, chunks[0], &mut app.items.state);
 }

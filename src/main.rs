@@ -78,6 +78,8 @@ fn run_app<B: Backend>(
                     KeyCode::Left => app.items.unselect(),
                     KeyCode::Char('j') => app.items.next(),
                     KeyCode::Char('k') => app.items.previous(),
+                    KeyCode::Char('g') => app.items.first(),
+                    KeyCode::Char('G') => app.items.last(),
                     KeyCode::Enter => {
                         Command::new(config.launch_command)
                             .args([app.items.items[app.items.state.selected().unwrap()]
