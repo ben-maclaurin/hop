@@ -16,11 +16,10 @@ use tui::{
 
 mod configuration;
 mod directory_manager;
-mod theme;
-mod ui;
+mod interface;
 use configuration::Configuration;
 use directory_manager::get_entries;
-use ui::{ui, App};
+use interface::ui::{ui, App};
 
 fn main() -> Result<(), Box<dyn Error>> {
     let mut jump_config = Configuration::default();

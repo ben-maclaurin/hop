@@ -1,4 +1,4 @@
-use crate::theme;
+use crate::interface::theme;
 use std::path::PathBuf;
 use tui::{
     backend::Backend,
