@@ -7,6 +7,7 @@ use tui::{
     widgets::{Block, Borders, List, ListItem, ListState},
     Frame,
 };
+use crate::icon::resolve_icon_and_color;
 
 pub struct StatefulList<T> {
     pub state: ListState,
@@ -55,24 +56,21 @@ impl<T> StatefulList<T> {
 }
 
 pub struct App {
-    pub items: StatefulList<String>,
+    pub items: StatefulList<(Color, String)>,
 }
 
 impl App {
     pub fn new(entries: Vec<PathBuf>) -> App {
-        let mut items = Vec::<String>::new();
+
+        println!("Detecting languages in project directory ... Please wait ...");
+
+        let mut items = Vec::<(Color, String)>::new();
+
         for entry in entries {
-            items.push(
-                entry
-                    .to_str()
-                    .unwrap()
-                    .to_owned()
-                    .split("/")
-                    .last()
-                    .unwrap()
-                    .to_owned(),
-            );
+            items.push(resolve_icon_and_color(entry.to_str().unwrap().to_owned()));
         }
+
+        print!("{}[2J", 27 as char);
 
         App {
             items: StatefulList::with_items(items),
@@ -92,8 +90,10 @@ pub fn ui<B: Backend>(f: &mut Frame<B>, app: &mut App, title: &String) {
         .items
         .iter()
         .map(|i| {
-            ListItem::new(vec![Spans::from(i.to_string())])
-                .style(Style::default().fg(Color::White).bg(Color::Reset))
+            // let (color, icon) = resolve_icon_and_color(i.to_owned());
+
+            ListItem::new(vec![Spans::from(i.clone().1)])
+                .style(Style::default().fg(i.0).bg(Color::Reset))
         })
         .collect();
 

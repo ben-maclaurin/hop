@@ -1,11 +1,31 @@
-use std::path::PathBuf;
+use std::{process::Command, path::Path};
+use std::{str, io};
+use tui::{
+    style::Color,
+};
 
-type IconWithPath = (String, String);
+enum Language {
+    Rust,
+    TypeScript,
+    Unknown,
+}
 
-// The idea is to resolve the icons.
-pub fn resolve(entries: Vec<PathBuf>) -> Vec<IconWithPath> {
-    for entry in entries {
+pub fn resolve_icon_and_color(path: String) -> (Color, String) {
+    (Color::Red, github_linguist(path).unwrap())
+}
+
+
+fn github_linguist(path: String) -> Result<String, io::Error> {
+    // panic!("{}", path);
+
+    if Path::new(&path).is_dir() {
+        let output = Command::new("github-linguist").args([path.clone()]).output();
+
+        match output {
+            Ok(_) => return Ok("command ran ".to_string()),
+            Err(e) => return Ok("command did not run ".to_string()),
+        }
+    } else {
+        Ok("its a file".to_string())
     }
-
-    vec![("test".to_string(), "test".to_string())]
 }

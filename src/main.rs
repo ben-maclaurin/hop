@@ -82,7 +82,8 @@ fn run_app<B: Backend>(
                         Command::new(config.launch_command)
                             .args([projects_dir
                                 + "/"
-                                + &app.items.items[app.items.state.selected().unwrap()]
+                                // + &app.items.items[app.items.state.selected().unwrap()]
+                                +"test"
                                 + "/"])
                             .spawn()?
                             .wait()
