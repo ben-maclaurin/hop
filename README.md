@@ -13,9 +13,9 @@ two dependencies.
 This is a Ruby tool used by Jump to analyse project languages. You can find installation
 instructions [here](https://github.com/github/linguist#installation).
 
-2. [Nerd Font](https://www.nerdfonts.com/font-downloads)
+2. [Nerd Fonts](https://www.nerdfonts.com/font-downloads)
 
-Jump uses Nerd Fonts for icon rendering. Your terminal/terminal emulator will need to
+Jump uses Nerd Fonts for icon rendering. Your terminal/emulator will need to
 be running one of these fonts.
 
 ## Installation

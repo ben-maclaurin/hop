@@ -13,6 +13,8 @@ pub enum Language {
     HTML,
     Python,
     Java,
+    EmacsLisp,
+    Go,
     Unknown,
 }
 
@@ -65,6 +67,8 @@ fn match_language(language: String) -> Language {
         "HTML" => return Language::HTML,
         "Python" => return Language::Python,
         "Java" => return Language::Java,
+        "Emacs" => return Language::EmacsLisp,
+        "Go" => return Language::Go,
         _ => return Language::Unknown,
     }
 }
@@ -81,6 +85,8 @@ fn match_icon_and_color(language: Language) -> (Icon, Color) {
         Language::HTML => return (" ".to_string(), Color::Rgb(228, 104, 118)),
         Language::Python => return (" ".to_string(), Color::Rgb(156, 171, 202)),
         Language::Java => return (" ".to_string(), Color::Rgb(147, 128, 86)),
+        Language::EmacsLisp => return (" ".to_string(), Color::Rgb(210, 126, 153)),
+        Language::Go => return ("ﳑ ".to_string(), Color::Rgb(163, 212, 213)),
         _ => return (" ".to_string(), Color::White),
     }
 }
