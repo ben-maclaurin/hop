@@ -16,6 +16,7 @@ pub struct Configuration {
 pub enum Editor {
     Vim,
     Neovim,
+    VSCode,
 }
 
 impl Default for Configuration {
@@ -53,13 +54,15 @@ impl Configuration {
 pub fn get_launch_cmd(editor: Editor) -> String {
     match editor {
         Editor::Vim => "vim".to_string(),
-        _ => "neovim".to_string()
+        Editor::VSCode => "code".to_string(),
+        _ => "nvim".to_string()
     }
 }
 
 fn get_editor(configuration_value: String) -> Editor {
     match configuration_value.as_str() {
         "vim" => return Editor::Vim,
+        "vscode" => return Editor::VSCode,
         _ => Editor::Neovim,
     }
 }
