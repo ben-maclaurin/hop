@@ -18,8 +18,8 @@ mod configuration;
 mod directory_manager;
 mod theme;
 mod ui;
-use configuration::{Configuration, get_launch_cmd};
-use directory_manager::{get_entries, get_home_dir};
+use configuration::Configuration;
+use directory_manager::get_entries;
 use ui::{ui, App};
 
 fn main() -> Result<(), Box<dyn Error>> {
@@ -63,8 +63,6 @@ fn run_app<B: Backend>(
 ) -> io::Result<()> {
     let mut last_tick = Instant::now();
 
-    let projects_dir = get_home_dir().to_str().unwrap().to_owned() + "/" + &config.directory;
-
     loop {
         terminal.draw(|f| ui(f, &mut app, &config.title))?;
 
@@ -81,7 +79,7 @@ fn run_app<B: Backend>(
                     KeyCode::Char('g') => app.items.first(),
                     KeyCode::Char('G') => app.items.last(),
                     KeyCode::Enter => {
-                        Command::new(get_launch_cmd(config.editor))
+                        Command::new(config.editor)
                             .args([app.items.items[app.items.state.selected().unwrap()]
                                 .0
                                 .to_string()

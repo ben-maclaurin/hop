@@ -45,10 +45,10 @@ fn resolve_language(path: FilePath) -> Result<Language, io::Error> {
                             return Ok(Language::Unknown);
                         }
                     }
-                    Err(e) => return Ok(Language::Unknown),
+                    Err(_) => return Ok(Language::Unknown),
                 };
             }
-            Err(e) => return Ok(Language::Unknown),
+            Err(_) => return Ok(Language::Unknown),
         }
     } else {
         Ok(Language::Unknown)
