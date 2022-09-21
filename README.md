@@ -2,7 +2,7 @@
 
 Jump is a [TUI](https://github.com/fdehau/tui-rs)-based project viewer. It is built to somewhat replicate Emacs' [Projectile](https://github.com/bbatsov/projectile) tool.
 
-<img width="1532" alt="Screenshot 2022-09-21 at 15 12 24" src="https://user-images.githubusercontent.com/54992484/191527687-90b9851c-85fb-4613-a8f8-636c0305b6d2.png">
+<img width="1532" alt="Screenshot 2022-09-21 at 15 42 56" src="https://user-images.githubusercontent.com/54992484/191535229-29ecef3e-e399-478f-8f71-e08a6703ad50.png">
 
 ## Prerequisites
 
