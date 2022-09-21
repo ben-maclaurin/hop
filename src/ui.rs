@@ -1,13 +1,13 @@
+use crate::icon::{resolve_icon_and_color, Icon};
 use std::path::PathBuf;
 use tui::{
     backend::Backend,
     layout::{Constraint, Direction, Layout},
     style::{Color, Style},
-    text::{Spans, Span},
+    text::{Span, Spans},
     widgets::{Block, Borders, List, ListItem, ListState},
     Frame,
 };
-use crate::icon::{resolve_icon_and_color, Icon};
 
 pub struct StatefulList<T> {
     pub state: ListState,
@@ -61,7 +61,6 @@ pub struct App {
 
 impl App {
     pub fn new(entries: Vec<PathBuf>) -> App {
-
         println!("Detecting languages in project directory ... Please wait ...");
 
         let mut items = Vec::<(String, Color, Icon)>::new();
@@ -91,12 +90,17 @@ pub fn ui<B: Backend>(f: &mut Frame<B>, app: &mut App, title: &String) {
         .iter()
         .map(|i| {
             let (path, color, icon) = i;
-           
-            ListItem::new(vec![
-              Spans::from(vec![
-                  Span::styled(icon.to_string() + &path.split("/").collect::<Vec<_>>().last().unwrap().to_string(), Style::default().fg(color.to_owned())),
-              ]),
-            ])
+
+            ListItem::new(vec![Spans::from(vec![Span::styled(
+                icon.to_string()
+                    + &path
+                        .split("/")
+                        .collect::<Vec<_>>()
+                        .last()
+                        .unwrap()
+                        .to_string(),
+                Style::default().fg(color.to_owned()),
+            )])])
         })
         .collect();
 

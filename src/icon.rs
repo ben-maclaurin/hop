@@ -1,8 +1,6 @@
-use std::{process::Command, path::Path};
-use std::{str, io};
-use tui::{
-    style::Color,
-};
+use std::{io, str};
+use std::{path::Path, process::Command};
+use tui::style::Color;
 
 pub enum Language {
     Rust,
@@ -27,24 +25,27 @@ pub fn resolve_icon_and_color(path: String) -> (FilePath, Color, Icon) {
     (path, color, icon)
 }
 
-
 fn github_linguist(path: FilePath) -> Result<Language, io::Error> {
     if Path::new(&path).is_dir() {
-        let output = Command::new("github-linguist").args([path.clone()]).output();
+        let output = Command::new("github-linguist")
+            .args([path.clone()])
+            .output();
 
         match output {
             Ok(_) => {
-                 match str::from_utf8(&output.unwrap().stdout) {
-                     Ok(output) => {
-                         if output.len() > 0 {
-                            return Ok(match_language(output.split_whitespace().collect::<Vec<_>>()[2].to_string()))
-                         } else {
-                             return Ok(Language::Unknown)
-                         }
-                     },
+                match str::from_utf8(&output.unwrap().stdout) {
+                    Ok(output) => {
+                        if output.len() > 0 {
+                            return Ok(match_language(
+                                output.split_whitespace().collect::<Vec<_>>()[2].to_string(),
+                            ));
+                        } else {
+                            return Ok(Language::Unknown);
+                        }
+                    }
                     Err(e) => return Ok(Language::Unknown),
                 };
-            },
+            }
             Err(e) => return Ok(Language::Unknown),
         }
     } else {
@@ -80,7 +81,6 @@ fn match_icon_and_color(language: Language) -> (Icon, Color) {
         Language::HTML => return (" ".to_string(), Color::Rgb(228, 104, 118)),
         Language::Python => return (" ".to_string(), Color::Rgb(156, 171, 202)),
         Language::Java => return (" ".to_string(), Color::Rgb(147, 128, 86)),
-        _ => return (" ".to_string(), Color::White)
+        _ => return (" ".to_string(), Color::White),
     }
-    
 }

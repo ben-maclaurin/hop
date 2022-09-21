@@ -16,8 +16,8 @@ use tui::{
 
 mod configuration;
 mod directory_manager;
-mod ui;
 mod icon;
+mod ui;
 use configuration::Configuration;
 use directory_manager::{get_entries, get_home_dir};
 use ui::{ui, App};
@@ -80,7 +80,9 @@ fn run_app<B: Backend>(
                     KeyCode::Char('k') => app.items.previous(),
                     KeyCode::Enter => {
                         Command::new(config.launch_command)
-                            .args([app.items.items[app.items.state.selected().unwrap()].0.to_string()
+                            .args([app.items.items[app.items.state.selected().unwrap()]
+                                .0
+                                .to_string()
                                 + "/"])
                             .spawn()?
                             .wait()
