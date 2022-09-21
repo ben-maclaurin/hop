@@ -89,7 +89,6 @@ impl App {
 
 pub fn ui<B: Backend>(f: &mut Frame<B>, app: &mut App, title: &String) {
     let chunks = Layout::default()
-        .margin(2)
         .direction(Direction::Horizontal)
         .constraints([Constraint::Percentage(100), Constraint::Percentage(100)].as_ref())
         .split(f.size());

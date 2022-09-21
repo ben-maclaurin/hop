@@ -5,16 +5,16 @@ use crate::directory_manager::get_home_dir;
 
 #[derive(Clone)]
 pub struct Configuration {
-    pub projects_dir: String,
-    pub launch_command: String,
+    pub directory: String,
+    pub editor: String,
     pub title: String,
 }
 
 impl Default for Configuration {
     fn default() -> Self {
         Self {
-            projects_dir: String::from(""),
-            launch_command: String::from("vim"),
+            directory: String::from(""),
+            editor: String::from("vim"),
             title: String::from("Project directories"),
         }
     }
@@ -34,9 +34,9 @@ impl Configuration {
 
         for (name, value) in config {
             match name.as_str() {
-                "projects_dir" => self.projects_dir = value,
+                "directory" => self.directory = value,
                 "title" => self.title = value,
-                _ => self.launch_command = value,
+                _ => self.editor = value,
             }
         }
     }

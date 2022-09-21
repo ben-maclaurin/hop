@@ -10,7 +10,7 @@ pub fn get_home_dir() -> PathBuf {
 }
 
 pub fn get_entries(config: Configuration) -> Result<Vec<PathBuf>, std::io::Error> {
-    let home_dir = get_home_dir().to_str().unwrap().to_owned() + "/" + &config.projects_dir;
+    let home_dir = get_home_dir().to_str().unwrap().to_owned() + "/" + &config.directory;
 
     let target_dir = Path::new(&home_dir);
 
