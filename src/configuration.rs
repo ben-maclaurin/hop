@@ -62,7 +62,7 @@ pub fn get_launch_cmd(editor: Editor) -> String {
 fn get_editor(configuration_value: String) -> Editor {
     match configuration_value.as_str() {
         "vim" => return Editor::Vim,
-        "vscode" => return Editor::VSCode,
-        _ => Editor::Neovim,
+        "neovim" => return Editor::Neovim,
+        _ => Editor::VSCode,
     }
 }
