@@ -224,6 +224,19 @@ dependencies = [
 ]
 
 [[package]]
+name = "hop"
+version = "0.1.0"
+dependencies = [
+ "colored",
+ "config",
+ "crossterm",
+ "directories",
+ "serde",
+ "serde_derive",
+ "tui",
+]
+
+[[package]]
 name = "itoa"
 version = "1.0.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -238,19 +251,6 @@ dependencies = [
  "pest",
  "pest_derive",
  "serde",
-]
-
-[[package]]
-name = "jump"
-version = "0.1.0"
-dependencies = [
- "colored",
- "config",
- "crossterm",
- "directories",
- "serde",
- "serde_derive",
- "tui",
 ]
 
 [[package]]

@@ -24,7 +24,7 @@ impl Default for Configuration {
         Self {
             directory: String::from(""),
             editor: Editor::VSCode,
-            title: String::from("Project directories"),
+            title: String::from("Hop"),
         }
     }
 }
