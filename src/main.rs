@@ -18,7 +18,7 @@ mod configuration;
 mod directory_manager;
 mod icon;
 mod ui;
-use configuration::Configuration;
+use configuration::{Configuration, get_launch_cmd};
 use directory_manager::{get_entries, get_home_dir};
 use ui::{ui, App};
 
@@ -81,7 +81,7 @@ fn run_app<B: Backend>(
                     KeyCode::Char('g') => app.items.first(),
                     KeyCode::Char('G') => app.items.last(),
                     KeyCode::Enter => {
-                        Command::new(config.editor)
+                        Command::new(get_launch_cmd(config.editor))
                             .args([app.items.items[app.items.state.selected().unwrap()]
                                 .0
                                 .to_string()

@@ -3,18 +3,26 @@ use std::collections::HashMap;
 
 use crate::directory_manager::get_home_dir;
 
+const CONFIG_LOCATION: &'static str = "/.config/jump/jump.yml";
+
 #[derive(Clone)]
 pub struct Configuration {
     pub directory: String,
-    pub editor: String,
+    pub editor: Editor,
     pub title: String,
+}
+
+#[derive(Clone)]
+pub enum Editor {
+    Vim,
+    Neovim,
 }
 
 impl Default for Configuration {
     fn default() -> Self {
         Self {
             directory: String::from(""),
-            editor: String::from("vim"),
+            editor: Editor::Vim,
             title: String::from("Project directories"),
         }
     }
@@ -24,7 +32,7 @@ impl Configuration {
     pub fn init(&mut self) {
         let config = Config::builder()
             .add_source(config::File::with_name(
-                &(String::from(get_home_dir().to_str().unwrap()) + "/.config/jump/jump.yml"),
+                &(String::from(get_home_dir().to_str().unwrap()) + CONFIG_LOCATION),
             ))
             .add_source(config::Environment::with_prefix("APP"))
             .build()
@@ -36,8 +44,22 @@ impl Configuration {
             match name.as_str() {
                 "directory" => self.directory = value,
                 "title" => self.title = value,
-                _ => self.editor = value,
+                _ => self.editor = get_editor(value),
             }
         }
+    }
+}
+
+pub fn get_launch_cmd(editor: Editor) -> String {
+    match editor {
+        Editor::Vim => "vim".to_string(),
+        _ => "neovim".to_string()
+    }
+}
+
+fn get_editor(configuration_value: String) -> Editor {
+    match configuration_value.as_str() {
+        "vim" => return Editor::Vim,
+        _ => Editor::Neovim,
     }
 }
