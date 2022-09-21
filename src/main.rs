@@ -80,10 +80,9 @@ fn run_app<B: Backend>(
                     KeyCode::Char('k') => app.items.previous(),
                     KeyCode::Enter => {
                         Command::new(config.launch_command)
-                            .args([projects_dir
-                                + "/"
-                                // + &app.items.items[app.items.state.selected().unwrap()]
-                                +"test"
+                            .args([
+                                "~".to_string()
+                                + &app.items.items[app.items.state.selected().unwrap()].0
                                 + "/"])
                             .spawn()?
                             .wait()

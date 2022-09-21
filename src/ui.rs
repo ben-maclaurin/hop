@@ -3,11 +3,11 @@ use tui::{
     backend::Backend,
     layout::{Constraint, Direction, Layout},
     style::{Color, Style},
-    text::Spans,
+    text::{Spans, Span},
     widgets::{Block, Borders, List, ListItem, ListState},
     Frame,
 };
-use crate::icon::{resolve_icon_and_color, Language, Icon};
+use crate::icon::{resolve_icon_and_color, Icon};
 
 pub struct StatefulList<T> {
     pub state: ListState,
@@ -90,12 +90,14 @@ pub fn ui<B: Backend>(f: &mut Frame<B>, app: &mut App, title: &String) {
         .items
         .iter()
         .map(|i| {
-            // let (color, icon) = resolve_icon_and_color(i.to_owned());
-
             let (path, color, icon) = i;
-
-            ListItem::new(vec![Spans::from(icon.to_string() + path)])
-                .style(Style::default().fg(color.to_owned()).bg(Color::Reset))
+           
+            ListItem::new(vec![
+              Spans::from(vec![
+                          Span::styled(icon.to_string(), Style::default().fg(color.to_owned())),
+                          Span::styled(path.split("/").collect::<Vec<_>>().last().unwrap().to_string(), Style::default()),
+              ]),
+            ])
         })
         .collect();
 
@@ -105,7 +107,7 @@ pub fn ui<B: Backend>(f: &mut Frame<B>, app: &mut App, title: &String) {
                 .borders(Borders::ALL)
                 .title(title.to_owned()),
         )
-        .highlight_style(Style::default().bg(Color::Cyan).fg(Color::Black));
+        .highlight_style(Style::default().bg(Color::Rgb(21, 21, 27)));
 
     f.render_stateful_widget(items, chunks[0], &mut app.items.state);
 }
