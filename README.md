@@ -3,7 +3,7 @@
 Jump is a small project library viewer. It is built to somewhat replicate
 the functionality of the Emacs [Projectile](https://github.com/bbatsov/projectile) tool.
 
-<img width="1532" alt="Screenshot 2022-09-21 at 15 10 54" src="https://user-images.githubusercontent.com/54992484/191527453-a9287f71-2105-432c-9a6b-02900a6e08a0.png">
+<img width="1532" alt="Screenshot 2022-09-21 at 15 12 24" src="https://user-images.githubusercontent.com/54992484/191527687-90b9851c-85fb-4613-a8f8-636c0305b6d2.png">
 
 ## Prerequisites
 
