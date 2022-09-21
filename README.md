@@ -3,6 +3,8 @@
 Jump is a small project library viewer. It is built to somewhat replicate
 the functionality of the Emacs [Projectile](https://github.com/bbatsov/projectile) tool.
 
+<img width="1532" alt="Screenshot 2022-09-21 at 15 10 54" src="https://user-images.githubusercontent.com/54992484/191527453-a9287f71-2105-432c-9a6b-02900a6e08a0.png">
+
 ## Prerequisites
 
 If you want Jump to display project languages, you will need to install
