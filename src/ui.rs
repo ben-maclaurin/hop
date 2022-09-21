@@ -94,8 +94,7 @@ pub fn ui<B: Backend>(f: &mut Frame<B>, app: &mut App, title: &String) {
            
             ListItem::new(vec![
               Spans::from(vec![
-                          Span::styled(icon.to_string(), Style::default().fg(color.to_owned())),
-                          Span::styled(path.split("/").collect::<Vec<_>>().last().unwrap().to_string(), Style::default()),
+                  Span::styled(icon.to_string() + &path.split("/").collect::<Vec<_>>().last().unwrap().to_string(), Style::default().fg(color.to_owned())),
               ]),
             ])
         })
@@ -107,7 +106,7 @@ pub fn ui<B: Backend>(f: &mut Frame<B>, app: &mut App, title: &String) {
                 .borders(Borders::ALL)
                 .title(title.to_owned()),
         )
-        .highlight_style(Style::default().bg(Color::Rgb(21, 21, 27)));
+        .highlight_style(Style::default().bg(Color::Rgb(84, 84, 109)));
 
     f.render_stateful_widget(items, chunks[0], &mut app.items.state);
 }

@@ -70,16 +70,16 @@ fn match_language(language: String) -> Language {
 
 fn match_icon_and_color(language: Language) -> (Icon, Color) {
     match language {
-        Language::Rust => return (" ".to_string(), Color::Rgb(214, 167, 137)),
-        Language::TypeScript => return ("ﯤ ".to_string(), Color::Rgb(79, 136, 221)),
-        Language::JavaScript => return (" ".to_string(), Color::Rgb(238, 225, 112)),
-        Language::Swift => return ("ﯣ ".to_string(), Color::Rgb(222, 93, 97)),
-        Language::Elixir => return (" ".to_string(), Color::Rgb(105, 77, 123)),
-        Language::Ruby => return (" ".to_string(), Color::LightRed),
+        Language::Rust => return (" ".to_string(), Color::Rgb(255, 160, 102)),
+        Language::TypeScript => return ("ﯤ ".to_string(), Color::Rgb(126, 156, 216)),
+        Language::JavaScript => return (" ".to_string(), Color::Rgb(220, 165, 97)),
+        Language::Swift => return ("ﯣ ".to_string(), Color::Rgb(255, 93, 98)),
+        Language::Elixir => return (" ".to_string(), Color::Rgb(149, 127, 184)),
+        Language::Ruby => return (" ".to_string(), Color::Rgb(195, 64, 67)),
         Language::Markdown => return (" ".to_string(), Color::White),
-        Language::HTML => return (" ".to_string(), Color::White),
-        Language::Python => return (" ".to_string(), Color::Blue),
-        Language::Java => return (" ".to_string(), Color::White),
+        Language::HTML => return (" ".to_string(), Color::Rgb(228, 104, 118)),
+        Language::Python => return (" ".to_string(), Color::Rgb(156, 171, 202)),
+        Language::Java => return (" ".to_string(), Color::Rgb(147, 128, 86)),
         _ => return (" ".to_string(), Color::White)
     }
     
