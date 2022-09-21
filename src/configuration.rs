@@ -3,7 +3,7 @@ use std::collections::HashMap;
 
 use crate::directory_manager::get_home_dir;
 
-const CONFIG_LOCATION: &'static str = "/.config/jump/jump.yml";
+const CONFIG_LOCATION: &'static str = "/.config/hop/hop.yml";
 
 #[derive(Clone)]
 pub struct Configuration {
@@ -22,7 +22,7 @@ pub enum Editor {
 impl Default for Configuration {
     fn default() -> Self {
         Self {
-            directory: String::from(""),
+            directory: String::from("jump"),
             editor: Editor::VSCode,
             title: String::from("Hop"),
         }
@@ -31,23 +31,32 @@ impl Default for Configuration {
 
 impl Configuration {
     pub fn init(&mut self) {
-        let config = Config::builder()
+
+        let config: Option<Config> = match Config::builder()
             .add_source(config::File::with_name(
                 &(String::from(get_home_dir().to_str().unwrap()) + CONFIG_LOCATION),
             ))
             .add_source(config::Environment::with_prefix("APP"))
-            .build()
-            .unwrap();
+            .build() {
+                Ok(config) => Some(config),
+                Err(_) => None,
+            };
 
-        let config = config.try_deserialize::<HashMap<String, String>>().unwrap();
+        match config {
+            Some(config) => {
+                let config = config.try_deserialize::<HashMap<String, String>>().unwrap();
 
-        for (name, value) in config {
-            match name.as_str() {
-                "directory" => self.directory = value,
-                "title" => self.title = value,
-                _ => self.editor = get_editor(value),
-            }
+                for (name, value) in config {
+                    match name.as_str() {
+                        "directory" => self.directory = value,
+                        "title" => self.title = value,
+                        _ => self.editor = get_editor(value),
+                    }
+                }
+            },
+            _ => {},
         }
+
     }
 }
 
