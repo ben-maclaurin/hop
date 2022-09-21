@@ -74,7 +74,9 @@ impl App {
         let mut items = Vec::<(String, Color, Icon)>::new();
 
         for entry in entries {
-            items.push(resolve_icon_and_color(entry.to_str().unwrap().to_owned()));
+            if entry.is_dir() {
+                items.push(resolve_icon_and_color(entry.to_str().unwrap().to_owned()));
+            }
         }
 
         print!("{}[2J", 27 as char);
