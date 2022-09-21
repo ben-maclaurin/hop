@@ -23,7 +23,7 @@ impl Default for Configuration {
     fn default() -> Self {
         Self {
             directory: String::from(""),
-            editor: Editor::Vim,
+            editor: Editor::VSCode,
             title: String::from("Project directories"),
         }
     }
