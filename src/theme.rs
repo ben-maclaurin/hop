@@ -21,13 +21,13 @@ pub enum Language {
 pub type Icon = String;
 type FilePath = String;
 
-pub fn resolve_icon_and_color(path: String) -> (FilePath, Color, Icon) {
-    let (icon, color) = match_icon_and_color(github_linguist(path.clone()).unwrap());
+pub fn apply(path: String) -> (FilePath, Color, Icon) {
+    let (icon, color) = apply_theme(resolve_language(path.clone()).unwrap());
 
     (path, color, icon)
 }
 
-fn github_linguist(path: FilePath) -> Result<Language, io::Error> {
+fn resolve_language(path: FilePath) -> Result<Language, io::Error> {
     if Path::new(&path).is_dir() {
         let output = Command::new("github-linguist")
             .args([path.clone()])
@@ -73,7 +73,7 @@ fn match_language(language: String) -> Language {
     }
 }
 
-fn match_icon_and_color(language: Language) -> (Icon, Color) {
+fn apply_theme(language: Language) -> (Icon, Color) {
     match language {
         Language::Rust => return (" ".to_string(), Color::Rgb(255, 160, 102)),
         Language::TypeScript => return ("ﯤ ".to_string(), Color::Rgb(126, 156, 216)),

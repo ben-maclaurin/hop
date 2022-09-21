@@ -1,4 +1,4 @@
-use crate::icon::{resolve_icon_and_color, Icon};
+use crate::theme;
 use std::path::PathBuf;
 use tui::{
     backend::Backend,
@@ -64,18 +64,18 @@ impl<T> StatefulList<T> {
 }
 
 pub struct App {
-    pub items: StatefulList<(String, Color, Icon)>,
+    pub items: StatefulList<(String, Color, theme::Icon)>,
 }
 
 impl App {
     pub fn new(entries: Vec<PathBuf>) -> App {
         println!("Detecting languages in project directory ... Please wait ...");
 
-        let mut items = Vec::<(String, Color, Icon)>::new();
+        let mut items = Vec::<(String, Color, theme::Icon)>::new();
 
         for entry in entries {
             if entry.is_dir() {
-                items.push(resolve_icon_and_color(entry.to_str().unwrap().to_owned()));
+                items.push(theme::apply(entry.to_str().unwrap().to_owned()));
             }
         }
 

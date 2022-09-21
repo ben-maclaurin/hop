@@ -16,7 +16,7 @@ use tui::{
 
 mod configuration;
 mod directory_manager;
-mod icon;
+mod theme;
 mod ui;
 use configuration::{Configuration, get_launch_cmd};
 use directory_manager::{get_entries, get_home_dir};
