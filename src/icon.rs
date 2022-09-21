@@ -4,18 +4,23 @@ use tui::{
     style::Color,
 };
 
-enum Language {
+pub enum Language {
     Rust,
     TypeScript,
     Unknown,
 }
 
-pub fn resolve_icon_and_color(path: String) -> (Color, String) {
-    (Color::Red, github_linguist(path).unwrap())
+pub type Icon = String;
+type FilePath = String;
+
+pub fn resolve_icon_and_color(path: String) -> (FilePath, Color, Icon) {
+    let (icon, color) = match_icon_and_color(github_linguist(path.clone()).unwrap());
+
+    (path, color, icon)
 }
 
 
-fn github_linguist(path: String) -> Result<String, io::Error> {
+fn github_linguist(path: FilePath) -> Result<Language, io::Error> {
     // panic!("{}", path);
 
     if Path::new(&path).is_dir() {
@@ -25,18 +30,33 @@ fn github_linguist(path: String) -> Result<String, io::Error> {
             Ok(_) => {
                  match str::from_utf8(&output.unwrap().stdout) {
                      Ok(output) => {
-                         if output.len() >= 3 {
-                            return Ok(output.split_whitespace().collect::<Vec<_>>()[2].to_string())
+                         if output.len() > 0 {
+                            return Ok(match_language(output.split_whitespace().collect::<Vec<_>>()[2].to_string()))
                          } else {
-                             return Ok("some issue i guess".to_string())
+                             return Ok(Language::Unknown)
                          }
                      },
-                    Err(e) => return Ok("not a repo".to_string()),
+                    Err(e) => return Ok(Language::Unknown),
                 };
             },
-            Err(e) => return Ok("command did not run ".to_string()),
+            Err(e) => return Ok(Language::Unknown),
         }
     } else {
-        Ok("its a file".to_string())
+        Ok(Language::Unknown)
     }
+}
+
+fn match_language(language: String) -> Language {
+    match language.as_str() {
+        "Rust" => return Language::Rust,
+        _ => return Language::Unknown,
+    }
+}
+
+fn match_icon_and_color(language: Language) -> (Icon, Color) {
+    match language {
+        Language::Rust => return (" ".to_string(), Color::Red),
+        _ => return ("".to_string(), Color::White)
+    }
+    
 }

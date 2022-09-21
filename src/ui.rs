@@ -7,7 +7,7 @@ use tui::{
     widgets::{Block, Borders, List, ListItem, ListState},
     Frame,
 };
-use crate::icon::resolve_icon_and_color;
+use crate::icon::{resolve_icon_and_color, Language, Icon};
 
 pub struct StatefulList<T> {
     pub state: ListState,
@@ -56,7 +56,7 @@ impl<T> StatefulList<T> {
 }
 
 pub struct App {
-    pub items: StatefulList<(Color, String)>,
+    pub items: StatefulList<(String, Color, Icon)>,
 }
 
 impl App {
@@ -64,7 +64,7 @@ impl App {
 
         println!("Detecting languages in project directory ... Please wait ...");
 
-        let mut items = Vec::<(Color, String)>::new();
+        let mut items = Vec::<(String, Color, Icon)>::new();
 
         for entry in entries {
             items.push(resolve_icon_and_color(entry.to_str().unwrap().to_owned()));
@@ -92,8 +92,10 @@ pub fn ui<B: Backend>(f: &mut Frame<B>, app: &mut App, title: &String) {
         .map(|i| {
             // let (color, icon) = resolve_icon_and_color(i.to_owned());
 
-            ListItem::new(vec![Spans::from(i.clone().1)])
-                .style(Style::default().fg(i.0).bg(Color::Reset))
+            let (path, color, icon) = i;
+
+            ListItem::new(vec![Spans::from(icon.to_string() + path)])
+                .style(Style::default().fg(color.to_owned()).bg(Color::Reset))
         })
         .collect();
 
