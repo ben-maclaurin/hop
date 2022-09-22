@@ -83,7 +83,7 @@ impl App {
             } else {
                 items.push((
                     entry.to_str().unwrap().to_owned(),
-                    (" ".to_string(), Color::White),
+                    (" ".to_string(), WHITE),
                 ))
             }
         }
@@ -99,6 +99,7 @@ impl App {
 pub fn ui<B: Backend>(f: &mut Frame<B>, app: &mut App, title: &String) {
     let chunks = Layout::default()
         .direction(Direction::Horizontal)
+        .margin(5)
         .constraints([Constraint::Percentage(100), Constraint::Percentage(100)].as_ref())
         .split(f.size());
 
@@ -118,7 +119,7 @@ pub fn ui<B: Backend>(f: &mut Frame<B>, app: &mut App, title: &String) {
                         .last()
                         .unwrap()
                         .to_string(),
-                Style::default().fg(color.to_owned()),
+                Style::default().fg(Color::Rgb(color.0, color.1, color.2)),
             )])])
         })
         .collect();

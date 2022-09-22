@@ -1,9 +1,14 @@
 use serde_derive::{Deserialize, Serialize};
 
-pub struct Project {
+use crate::interface::theme::Theme;
 
+#[derive(Deserialize, Serialize, Debug)]
+pub struct Project {
+    path: String,
+    theme: Theme,
 }
 
+#[derive(Deserialize, Serialize, Debug)]
 pub struct Store {
     projects: Vec<Project>
 }
