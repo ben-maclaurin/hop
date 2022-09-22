@@ -1,8 +1,12 @@
 use crate::{
-    backend::{configuration::Configuration, project::Project, project::{Store, store, read}},
+    backend::{
+        configuration::Configuration,
+        project::{Project, PROJECT_STORE_LOCATION},
+        project::{read, store, Store},
+    },
     interface::theme::*,
 };
-use std::path::{PathBuf, Path};
+use std::path::{Path, PathBuf};
 use tui::{
     backend::Backend,
     layout::{Constraint, Direction, Layout},
@@ -11,6 +15,7 @@ use tui::{
     widgets::{Block, Borders, List, ListItem, ListState},
     Frame,
 };
+use directories::BaseDirs;
 
 pub struct StatefulList<T> {
     pub state: ListState,
@@ -70,37 +75,47 @@ pub struct App {
     pub items: StatefulList<Project>,
 }
 
+fn get_projects(config: &Configuration, entries: Vec<PathBuf>) -> Vec<Project> {
+    let mut projects = Vec::<Project>::new();
+
+    for entry in entries {
+        if config.icons {
+            projects.push(apply(entry.to_str().unwrap().to_owned()));
+        } else {
+            projects.push(Project {
+                path: entry.to_str().unwrap().to_owned(),
+                theme: Theme {
+                    icon: " ".to_string(),
+                    color: WHITE,
+                },
+            })
+        }
+    }
+
+    store_projects(projects)
+}
+
+fn store_projects(projects: Vec<Project>) -> Vec<Project> {
+    store(Store {
+        projects: projects.clone(),
+    })
+    .unwrap();
+
+    projects
+}
+
 impl App {
     pub fn new(mut entries: Vec<PathBuf>, config: &Configuration) -> App {
         println!("Generating icons for projects directory ...");
-
-        let mut projects = Vec::<Project>::new();
 
         if !config.include_files {
             entries = entries.into_iter().filter(|entry| entry.is_dir()).collect();
         }
 
-        match read(Path::new("test.json")) {
-            Ok(store) => projects = store.projects,
-            Err(_) => {
-                for entry in entries {
-                    if config.icons {
-                        projects.push(apply(entry.to_str().unwrap().to_owned()));
-                    } else {
-                        projects.push(Project {
-                            path: entry.to_str().unwrap().to_owned(),
-                            theme: Theme {icon: " ".to_string(), color: WHITE},
-                        })
-                    }
-                }
-            }
-        }
-
-        // let project_store = Store {
-        //     projects: items.clone()
-        // };
-
-        // store(project_store).unwrap();
+        let projects = match read(Path::new(&(BaseDirs::new().unwrap().home_dir().to_str().unwrap().to_string() + PROJECT_STORE_LOCATION))) {
+            Some(store) => store.projects,
+            None => get_projects(config, entries),
+        };
 
         print!("{}[2J", 27 as char);
 
@@ -124,13 +139,18 @@ pub fn ui<B: Backend>(f: &mut Frame<B>, app: &mut App, title: &String) {
         .map(|project| {
             ListItem::new(vec![Spans::from(vec![Span::styled(
                 project.theme.icon.to_string()
-                    + &project.path
+                    + &project
+                        .path
                         .split("/")
                         .collect::<Vec<_>>()
                         .last()
                         .unwrap()
                         .to_string(),
-                Style::default().fg(Color::Rgb(project.theme.color.0, project.theme.color.1, project.theme.color.2)),
+                Style::default().fg(Color::Rgb(
+                    project.theme.color.0,
+                    project.theme.color.1,
+                    project.theme.color.2,
+                )),
             )])])
         })
         .collect();

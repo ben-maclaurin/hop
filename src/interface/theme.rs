@@ -1,10 +1,10 @@
 use std::path::Path;
 
-use serde_derive::{Deserialize, Serialize};
 use crate::backend::{
     linguist::{get_git_language_of_path, Language},
     project::Project,
 };
+use serde_derive::{Deserialize, Serialize};
 
 #[derive(Deserialize, Serialize, Debug, Clone)]
 pub struct Theme {
