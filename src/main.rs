@@ -14,12 +14,10 @@ use tui::{
     Terminal,
 };
 
-mod configuration;
-mod directory_manager;
 mod interface;
-mod linguist;
-use configuration::Configuration;
-use directory_manager::get_entries;
+mod backend;
+use backend::configuration::Configuration;
+use backend::directory_manager::get_entries;
 use interface::ui::{ui, App};
 
 fn main() -> Result<(), Box<dyn Error>> {
@@ -35,9 +33,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     let mut terminal = Terminal::new(backend)?;
 
     let tick_rate = Duration::from_millis(250);
-
     let app = App::new(get_entries(jump_config.clone()).unwrap());
-
     let res = run_app(&mut terminal, app, tick_rate, jump_config);
 
     disable_raw_mode()?;

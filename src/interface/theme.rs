@@ -1,7 +1,7 @@
 use std::path::Path;
 use tui::style::Color;
 
-use crate::linguist::{get_git_language_of_path, Language};
+use crate::backend::linguist::{get_git_language_of_path, Language};
 
 pub type Icon = String;
 pub type Theme = (Icon, Color);

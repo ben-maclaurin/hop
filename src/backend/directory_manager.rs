@@ -3,7 +3,7 @@ use std::fs;
 use std::io;
 use std::path::{Path, PathBuf};
 
-use crate::configuration::Configuration;
+use crate::backend::configuration::Configuration;
 
 pub fn get_entries(config: Configuration) -> Result<Vec<PathBuf>, std::io::Error> {
     let home_dir = BaseDirs::new()
