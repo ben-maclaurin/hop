@@ -128,6 +128,7 @@ pub fn ui<B: Backend>(f: &mut Frame<B>, app: &mut App, title: &String) {
         .block(
             Block::default()
                 .borders(Borders::ALL)
+                .border_style(Style::default().fg(Color::Rgb(WHITE.0, WHITE.1, WHITE.2)))
                 .title(title.to_owned()),
         )
         .highlight_style(Style::default().bg(Color::Rgb(22, 22, 29)));
