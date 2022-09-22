@@ -46,33 +46,37 @@ pub fn store(store: Store) -> Result<(), std::io::Error> {
     )
 }
 
-pub fn get_projects(entries: Vec<PathBuf>, force_deep_sync: bool, config: &Configuration) -> Vec<Project> {
+pub fn get_projects(
+    entries: Vec<PathBuf>,
+    force_deep_sync: bool,
+    config: &Configuration,
+) -> Vec<Project> {
     match read(Path::new(
-                &(BaseDirs::new()
-                    .unwrap()
-                    .home_dir()
-                    .to_str()
-                    .unwrap()
-                    .to_string()
-                    + PROJECT_STORE_LOCATION),
-            )) {
-                Some(_) => {
-                    if !config.icons {
-                        return no_sync(entries)
-                    } else if force_deep_sync {
-                        return deep_sync(entries)
-                    } else {
-                        return shallow_sync(entries)
-                    }
-                }
-                None => {
-                    if !config.icons {
-                        return no_sync(entries)
-                    } else {
-                        return deep_sync(entries)
-                    }
-                }
-        };
+        &(BaseDirs::new()
+            .unwrap()
+            .home_dir()
+            .to_str()
+            .unwrap()
+            .to_string()
+            + PROJECT_STORE_LOCATION),
+    )) {
+        Some(_) => {
+            if !config.icons {
+                return no_sync(entries);
+            } else if force_deep_sync {
+                return deep_sync(entries);
+            } else {
+                return shallow_sync(entries);
+            }
+        }
+        None => {
+            if !config.icons {
+                return no_sync(entries);
+            } else {
+                return deep_sync(entries);
+            }
+        }
+    };
 }
 
 pub fn no_sync(entries: Vec<PathBuf>) -> Vec<Project> {

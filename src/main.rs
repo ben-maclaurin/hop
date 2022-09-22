@@ -108,17 +108,17 @@ fn run_app<B: Backend>(
 
                             return Ok(());
                         }
-                        _ => {},
+                        _ => {}
                     },
                     InputMode::Editing => match key.code {
                         KeyCode::Char(c) => {
                             app.input.push(c);
                             app.items.filter(&app.input);
-                        },
+                        }
                         KeyCode::Backspace => {
                             app.input.pop();
                             app.items.filter(&app.input);
-                        },
+                        }
                         KeyCode::Enter => {
                             app.items.first();
                             Command::new(config.editor)
@@ -130,12 +130,12 @@ fn run_app<B: Backend>(
                                 .unwrap();
 
                             return Ok(());
-                        },
+                        }
                         KeyCode::Tab => {
                             app.input_mode = InputMode::Normal;
                             app.items.first();
-                        },
-                        _ => {},
+                        }
+                        _ => {}
                     },
                 }
             }

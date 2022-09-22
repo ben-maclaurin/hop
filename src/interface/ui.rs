@@ -3,7 +3,8 @@ use crate::{
         configuration::Configuration,
         project::{get_projects, Project},
     },
-    interface::theme::*, InputMode,
+    interface::theme::*,
+    InputMode,
 };
 use std::path::PathBuf;
 use tui::{
@@ -39,9 +40,17 @@ impl StatefulList {
     }
 
     pub fn filter(&mut self, input: &String) {
-        let filtered: Vec<Project> = self.projects.clone().into_iter().filter(|x| {
-            x.path.to_lowercase().as_str().contains(input.to_lowercase().as_str())
-        }).collect();
+        let filtered: Vec<Project> = self
+            .projects
+            .clone()
+            .into_iter()
+            .filter(|x| {
+                x.path
+                    .to_lowercase()
+                    .as_str()
+                    .contains(input.to_lowercase().as_str())
+            })
+            .collect();
 
         self.items = filtered;
 
@@ -98,7 +107,10 @@ impl App {
         print!("{}[2J", 27 as char);
 
         App {
-            items: StatefulList::with_items(get_projects(entries.clone(), force_deep_sync, config), get_projects(entries, force_deep_sync, config)), // items used here
+            items: StatefulList::with_items(
+                get_projects(entries.clone(), force_deep_sync, config),
+                get_projects(entries, force_deep_sync, config),
+            ), // items used here
             input: String::new(),
             input_mode: InputMode::Editing,
         }
@@ -109,19 +121,14 @@ pub fn ui<B: Backend>(f: &mut Frame<B>, app: &mut App, title: &String) {
     let chunks = Layout::default()
         .direction(Direction::Vertical)
         .horizontal_margin(25)
-        .constraints(
-            [
-                Constraint::Percentage(90),
-                Constraint::Percentage(10),
-            ]
-            .as_ref(),
-        )
+        .constraints([Constraint::Percentage(90), Constraint::Percentage(10)].as_ref())
         .split(f.size());
 
     let items: Vec<ListItem> = app
         .items
         .items
-        .iter().rev()
+        .iter()
+        .rev()
         .map(|project| {
             ListItem::new(vec![Spans::from(vec![Span::styled(
                 project.theme.icon.to_string()
@@ -159,7 +166,6 @@ pub fn ui<B: Backend>(f: &mut Frame<B>, app: &mut App, title: &String) {
         .block(Block::default().borders(Borders::ALL).title("Search"));
 
     f.render_widget(input, chunks[1]);
-
 
     f.render_stateful_widget(items, chunks[0], &mut app.items.state);
 }
