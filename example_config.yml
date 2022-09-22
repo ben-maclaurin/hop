@@ -1,4 +1,5 @@
 directory: "Developer" # Starts at $HOME, so this would resolve to ~/Developer/
-title: "Projects"
-icons: "true" 
-editor: "code" # VSCode launch command
+title: "Projects" # default: "Hop"
+icons: "true" # default: false
+editor: "nvim" # default: "code" 
+include_files: "false" # default: false

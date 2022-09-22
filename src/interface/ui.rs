@@ -68,28 +68,30 @@ pub struct App {
 }
 
 impl App {
-    pub fn new(entries: Vec<PathBuf>, config: &Configuration) -> App {
+    pub fn new(mut entries: Vec<PathBuf>, config: &Configuration) -> App {
         println!("Detecting languages in project directory ... Please wait ...");
 
         let mut items = Vec::<(String, Theme)>::new();
 
+        if !config.include_files {
+            entries = entries.into_iter().filter(|entry| entry.is_dir()).collect();
+        }
+
         for entry in entries {
-            if entry.is_dir() {
-                if config.icons {
-                    items.push(apply(entry.to_str().unwrap().to_owned()));
-                } else {
-                    items.push((
-                        entry.to_str().unwrap().to_owned(),
-                        (" ".to_string(), Color::White),
-                    ))
-                }
+            if config.icons {
+                items.push(apply(entry.to_str().unwrap().to_owned()));
+            } else {
+                items.push((
+                    entry.to_str().unwrap().to_owned(),
+                    (" ".to_string(), Color::White),
+                ))
             }
         }
 
         print!("{}[2J", 27 as char);
 
         App {
-            items: StatefulList::with_items(items),
+            items: StatefulList::with_items(items), // items used here
         }
     }
 }

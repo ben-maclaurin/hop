@@ -12,6 +12,7 @@ pub struct Configuration {
     pub editor: String,
     pub title: String,
     pub icons: bool,
+    pub include_files: bool,
 }
 
 impl Default for Configuration {
@@ -21,6 +22,7 @@ impl Default for Configuration {
             editor: String::from("code"),
             title: String::from("Hop"),
             icons: false,
+            include_files: false,
         }
     }
 }
@@ -53,15 +55,19 @@ impl Configuration {
             match name.as_str() {
                 "directory" => self.directory = value,
                 "title" => self.title = value,
-                "icons" => {
-                    self.icons = match value.as_str() {
-                        "true" => true,
-                        _ => false,
-                    }
-                }
+                "icons" => self.icons = resolve_bool(value),
+                "include_files" => self.include_files = resolve_bool(value),
                 _ => self.editor = value,
             }
         }
+    }
+
+}
+
+fn resolve_bool(value: String) -> bool {
+    match value.as_str() {
+        "true" => true,
+        _ => false
     }
 }
 
