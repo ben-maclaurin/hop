@@ -1,13 +1,11 @@
 use crate::{
     backend::{
         configuration::Configuration,
-        project::read,
-        project::{get_projects, Project, SyncType, PROJECT_STORE_LOCATION},
+        project::{get_projects, Project},
     },
     interface::theme::*,
 };
-use directories::BaseDirs;
-use std::path::{Path, PathBuf};
+use std::path::PathBuf;
 use tui::{
     backend::Backend,
     layout::{Constraint, Direction, Layout},
@@ -76,44 +74,17 @@ pub struct App {
 }
 
 impl App {
-    pub fn new(mut entries: Vec<PathBuf>, config: &Configuration, sync: bool) -> App {
+    pub fn new(mut entries: Vec<PathBuf>, config: &Configuration, force_deep_sync: bool) -> App {
         println!("Generating icons for projects directory ...");
 
         if !config.include_files {
             entries = entries.into_iter().filter(|entry| entry.is_dir()).collect();
         }
 
-        let projects = match read(Path::new(
-            &(BaseDirs::new()
-                .unwrap()
-                .home_dir()
-                .to_str()
-                .unwrap()
-                .to_string()
-                + PROJECT_STORE_LOCATION),
-        )) {
-            Some(_) => {
-                if !config.icons {
-                    get_projects(entries, SyncType::None)
-                } else if sync {
-                    get_projects(entries, SyncType::Deep)
-                } else {
-                    get_projects(entries, SyncType::Shallow)
-                }
-            }
-            None => {
-                if !config.icons {
-                    get_projects(entries, SyncType::None)
-                } else {
-                    get_projects(entries, SyncType::Deep)
-                }
-            }
-        };
-
         print!("{}[2J", 27 as char);
 
         App {
-            items: StatefulList::with_items(projects), // items used here
+            items: StatefulList::with_items(get_projects(entries, force_deep_sync, config)), // items used here
         }
     }
 }

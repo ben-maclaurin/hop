@@ -24,10 +24,10 @@ use std::env;
 fn main() -> Result<(), Box<dyn Error>> {
     let args: Vec<String> = env::args().collect();
 
-    let mut sync: bool = false;
+    let mut force_deep_sync: bool = false;
 
     if args.len() > 1 && args[1] == "-s" {
-        sync = true;
+        force_deep_sync = true;
     }
 
     let mut jump_config = Configuration::default();
@@ -42,7 +42,11 @@ fn main() -> Result<(), Box<dyn Error>> {
     let mut terminal = Terminal::new(backend)?;
 
     let tick_rate = Duration::from_millis(250);
-    let app = App::new(get_project_paths(&jump_config).unwrap(), &jump_config, sync);
+    let app = App::new(
+        get_project_paths(&jump_config).unwrap(),
+        &jump_config,
+        force_deep_sync,
+    );
     let res = run_app(&mut terminal, app, tick_rate, jump_config);
 
     disable_raw_mode()?;
