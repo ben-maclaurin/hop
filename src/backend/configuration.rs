@@ -11,6 +11,7 @@ pub struct Configuration {
     pub directory: String,
     pub editor: String,
     pub title: String,
+    pub icons: bool,
 }
 
 impl Default for Configuration {
@@ -19,6 +20,7 @@ impl Default for Configuration {
             directory: String::from("jump"),
             editor: String::from("code"),
             title: String::from("Hop"),
+            icons: false,
         }
     }
 }
@@ -51,6 +53,12 @@ impl Configuration {
             match name.as_str() {
                 "directory" => self.directory = value,
                 "title" => self.title = value,
+                "icons" => {
+                    self.icons = match value.as_str() {
+                        "true" => true,
+                        _ => false,
+                    }
+                }
                 _ => self.editor = value,
             }
         }

@@ -5,7 +5,7 @@ use std::path::{Path, PathBuf};
 
 use crate::backend::configuration::Configuration;
 
-pub fn get_entries(config: Configuration) -> Result<Vec<PathBuf>, std::io::Error> {
+pub fn get_entries(config: &Configuration) -> Result<Vec<PathBuf>, std::io::Error> {
     let home_dir = BaseDirs::new()
         .unwrap()
         .home_dir()

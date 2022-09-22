@@ -1,4 +1,4 @@
-use crate::interface::theme::*;
+use crate::{backend::configuration::Configuration, interface::theme::*};
 use std::path::PathBuf;
 use tui::{
     backend::Backend,
@@ -68,14 +68,21 @@ pub struct App {
 }
 
 impl App {
-    pub fn new(entries: Vec<PathBuf>) -> App {
+    pub fn new(entries: Vec<PathBuf>, config: &Configuration) -> App {
         println!("Detecting languages in project directory ... Please wait ...");
 
         let mut items = Vec::<(String, Theme)>::new();
 
         for entry in entries {
             if entry.is_dir() {
-                items.push(apply(entry.to_str().unwrap().to_owned()));
+                if config.icons {
+                    items.push(apply(entry.to_str().unwrap().to_owned()));
+                } else {
+                    items.push((
+                        entry.to_str().unwrap().to_owned(),
+                        (" ".to_string(), Color::White),
+                    ))
+                }
             }
         }
 
