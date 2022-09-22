@@ -1,9 +1,13 @@
-use std::path::Path;
-
 use directories::BaseDirs;
 use serde_derive::{Deserialize, Serialize};
 
 use crate::interface::theme::Theme;
+
+use std::fs;
+use std::io;
+use std::path::{Path, PathBuf};
+
+use crate::backend::configuration::Configuration;
 
 pub const PROJECT_STORE_LOCATION: &'static str = "/.config/hop/projects.json";
 
@@ -39,3 +43,23 @@ pub fn store(store: Store) -> Result<(), std::io::Error> {
         serde_json::to_string_pretty(&store).unwrap(),
     )
 }
+
+pub fn get_projects(config: &Configuration) -> Result<Vec<PathBuf>, std::io::Error> {
+    let home_dir = BaseDirs::new()
+        .unwrap()
+        .home_dir()
+        .to_str()
+        .unwrap()
+        .to_string()
+        + "/"
+        + &config.directory; // also bad
+
+    let target_dir = Path::new(&home_dir);
+
+    let projects = fs::read_dir(target_dir)?
+        .map(|res| res.map(|e| e.path()))
+        .collect::<Result<Vec<_>, io::Error>>();
+
+    projects
+}
+

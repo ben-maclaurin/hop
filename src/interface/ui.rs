@@ -93,13 +93,13 @@ fn get_projects(config: &Configuration, entries: Vec<PathBuf>) -> Vec<Project> {
     }
 
     return if config.icons {
-        store_projects(projects)
+        deep_sync(projects)
     } else {
         projects
     }
 }
 
-fn store_projects(projects: Vec<Project>) -> Vec<Project> {
+fn deep_sync(projects: Vec<Project>) -> Vec<Project> {
     store(Store {
         projects: projects.clone(),
     })

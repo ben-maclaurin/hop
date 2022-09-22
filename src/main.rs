@@ -17,7 +17,7 @@ use tui::{
 mod backend;
 mod interface;
 use backend::configuration::Configuration;
-use backend::directory_manager::get_projects;
+use backend::project::get_projects;
 use interface::ui::{ui, App};
 use std::env;
 
@@ -26,7 +26,7 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     let mut sync: bool = false;
 
-    if args.len() > 1 && args[1] == "--sync" {
+    if args.len() > 1 && args[1] == "-s" {
         sync = true;
     }
 
