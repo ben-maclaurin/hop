@@ -21,7 +21,7 @@ use backend::project::get_project_paths;
 use interface::ui::{ui, App};
 use std::env;
 
-enum InputMode {
+pub enum InputMode {
     Normal,
     Editing,
 }
@@ -60,6 +60,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         LeaveAlternateScreen,
         DisableMouseCapture
     )?;
+
     terminal.show_cursor()?;
 
     if let Err(err) = res {
@@ -85,25 +86,57 @@ fn run_app<B: Backend>(
             .unwrap_or_else(|| Duration::from_secs(0));
         if crossterm::event::poll(timeout)? {
             if let Event::Key(key) = event::read()? {
-                match key.code {
-                    KeyCode::Char('q') => return Ok(()),
-                    KeyCode::Left => app.items.unselect(),
-                    KeyCode::Char('j') => app.items.next(),
-                    KeyCode::Char('k') => app.items.previous(),
-                    KeyCode::Char('g') => app.items.first(),
-                    KeyCode::Char('G') => app.items.last(),
-                    KeyCode::Enter => {
-                        Command::new(config.editor)
-                            .args([app.items.items[app.items.state.selected().unwrap()]
-                                .path
-                                .to_string()])
-                            .spawn()?
-                            .wait()
-                            .unwrap();
+                match app.input_mode {
+                    InputMode::Normal => match key.code {
+                        KeyCode::Char('q') => return Ok(()),
+                        KeyCode::Left => app.items.unselect(),
+                        KeyCode::Char('j') => app.items.next(),
+                        KeyCode::Char('k') => app.items.previous(),
+                        KeyCode::Char('g') => app.items.first(),
+                        KeyCode::Char('G') => app.items.last(),
+                        KeyCode::Tab => {
+                            app.input_mode = InputMode::Editing;
+                        }
+                        KeyCode::Enter => {
+                            Command::new(config.editor)
+                                .args([app.items.items[app.items.state.selected().unwrap()]
+                                    .path
+                                    .to_string()])
+                                .spawn()?
+                                .wait()
+                                .unwrap();
 
-                        return Ok(());
-                    }
-                    _ => {}
+                            return Ok(());
+                        }
+                        _ => {},
+                    },
+                    InputMode::Editing => match key.code {
+                        KeyCode::Char(c) => {
+                            app.input.push(c);
+                            app.items.filter(&app.input);
+                        },
+                        KeyCode::Backspace => {
+                            app.input.pop();
+                            app.items.filter(&app.input);
+                        },
+                        KeyCode::Enter => {
+                            app.items.first();
+                            Command::new(config.editor)
+                                .args([app.items.items[app.items.state.selected().unwrap()]
+                                    .path
+                                    .to_string()])
+                                .spawn()?
+                                .wait()
+                                .unwrap();
+
+                            return Ok(());
+                        },
+                        KeyCode::Tab => {
+                            app.input_mode = InputMode::Normal;
+                            app.items.first();
+                        },
+                        _ => {},
+                    },
                 }
             }
         }

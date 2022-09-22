@@ -3,7 +3,7 @@ use crate::{
         configuration::Configuration,
         project::{get_projects, Project},
     },
-    interface::theme::*,
+    interface::theme::*, InputMode,
 };
 use std::path::PathBuf;
 use tui::{
@@ -11,20 +11,22 @@ use tui::{
     layout::{Constraint, Direction, Layout},
     style::{Color, Style},
     text::{Span, Spans},
-    widgets::{Block, Borders, List, ListItem, ListState},
+    widgets::{Block, Borders, List, ListItem, ListState, Paragraph},
     Frame,
 };
 
-pub struct StatefulList<T> {
+pub struct StatefulList {
     pub state: ListState,
-    pub items: Vec<T>,
+    pub items: Vec<Project>,
+    pub projects: Vec<Project>,
 }
 
-impl<T> StatefulList<T> {
-    pub fn with_items(items: Vec<T>) -> StatefulList<T> {
+impl StatefulList {
+    pub fn with_items(items: Vec<Project>, projects: Vec<Project>) -> StatefulList {
         StatefulList {
             state: ListState::default(),
             items,
+            projects,
         }
     }
 
@@ -34,6 +36,16 @@ impl<T> StatefulList<T> {
 
     pub fn last(&mut self) {
         self.state.select(Some(self.items.len() - 1));
+    }
+
+    pub fn filter(&mut self, input: &String) {
+        let filtered: Vec<Project> = self.projects.clone().into_iter().filter(|x| {
+            x.path.to_lowercase().as_str().contains(input.to_lowercase().as_str())
+        }).collect();
+
+        self.items = filtered;
+
+        self.first();
     }
 
     pub fn next(&mut self) {
@@ -70,7 +82,9 @@ impl<T> StatefulList<T> {
 }
 
 pub struct App {
-    pub items: StatefulList<Project>,
+    pub items: StatefulList,
+    pub input: String,
+    pub input_mode: InputMode,
 }
 
 impl App {
@@ -84,16 +98,24 @@ impl App {
         print!("{}[2J", 27 as char);
 
         App {
-            items: StatefulList::with_items(get_projects(entries, force_deep_sync, config)), // items used here
+            items: StatefulList::with_items(get_projects(entries.clone(), force_deep_sync, config), get_projects(entries, force_deep_sync, config)), // items used here
+            input: String::new(),
+            input_mode: InputMode::Editing,
         }
     }
 }
 
 pub fn ui<B: Backend>(f: &mut Frame<B>, app: &mut App, title: &String) {
     let chunks = Layout::default()
-        .direction(Direction::Horizontal)
-        .margin(5)
-        .constraints([Constraint::Percentage(100), Constraint::Percentage(100)].as_ref())
+        .direction(Direction::Vertical)
+        .horizontal_margin(25)
+        .constraints(
+            [
+                Constraint::Percentage(90),
+                Constraint::Percentage(10),
+            ]
+            .as_ref(),
+        )
         .split(f.size());
 
     let items: Vec<ListItem> = app
@@ -124,9 +146,21 @@ pub fn ui<B: Backend>(f: &mut Frame<B>, app: &mut App, title: &String) {
             Block::default()
                 .borders(Borders::ALL)
                 .border_style(Style::default().fg(Color::Rgb(WHITE.0, WHITE.1, WHITE.2)))
+                .title_alignment(tui::layout::Alignment::Center)
+                .border_type(tui::widgets::BorderType::Rounded)
                 .title(title.to_owned()),
         )
         .highlight_style(Style::default().bg(Color::Rgb(34, 50, 73)));
+
+    let input = Paragraph::new(app.input.as_ref())
+        .style(match app.input_mode {
+            InputMode::Normal => Style::default(),
+            InputMode::Editing => Style::default().fg(Color::Yellow),
+        })
+        .block(Block::default().borders(Borders::ALL).title("Search").title_alignment(tui::layout::Alignment::Center));
+
+    f.render_widget(input, chunks[1]);
+
 
     f.render_stateful_widget(items, chunks[0], &mut app.items.state);
 }
