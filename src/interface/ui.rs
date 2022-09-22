@@ -99,7 +99,7 @@ pub fn ui<B: Backend>(f: &mut Frame<B>, app: &mut App, title: &String) {
     let items: Vec<ListItem> = app
         .items
         .items
-        .iter()
+        .iter().rev()
         .map(|project| {
             ListItem::new(vec![Spans::from(vec![Span::styled(
                 project.theme.icon.to_string()
@@ -126,7 +126,7 @@ pub fn ui<B: Backend>(f: &mut Frame<B>, app: &mut App, title: &String) {
                 .border_style(Style::default().fg(Color::Rgb(WHITE.0, WHITE.1, WHITE.2)))
                 .title(title.to_owned()),
         )
-        .highlight_style(Style::default().bg(Color::Rgb(22, 22, 29)));
+        .highlight_style(Style::default().bg(Color::Rgb(34, 50, 73)));
 
     f.render_stateful_widget(items, chunks[0], &mut app.items.state);
 }

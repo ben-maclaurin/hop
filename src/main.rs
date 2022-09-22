@@ -21,6 +21,11 @@ use backend::project::get_project_paths;
 use interface::ui::{ui, App};
 use std::env;
 
+enum InputMode {
+    Normal,
+    Editing,
+}
+
 fn main() -> Result<(), Box<dyn Error>> {
     let args: Vec<String> = env::args().collect();
 
