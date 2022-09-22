@@ -94,7 +94,7 @@ fn run_app<B: Backend>(
                         KeyCode::Char('k') => app.items.previous(),
                         KeyCode::Char('g') => app.items.first(),
                         KeyCode::Char('G') => app.items.last(),
-                        KeyCode::Tab => {
+                        KeyCode::Char('/') => {
                             app.input_mode = InputMode::Editing;
                         }
                         KeyCode::Enter => {
