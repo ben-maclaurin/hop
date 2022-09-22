@@ -147,7 +147,6 @@ pub fn ui<B: Backend>(f: &mut Frame<B>, app: &mut App, title: &String) {
                 .borders(Borders::ALL)
                 .border_style(Style::default().fg(Color::Rgb(WHITE.0, WHITE.1, WHITE.2)))
                 .title_alignment(tui::layout::Alignment::Center)
-                .border_type(tui::widgets::BorderType::Rounded)
                 .title(title.to_owned()),
         )
         .highlight_style(Style::default().bg(Color::Rgb(34, 50, 73)));
@@ -157,7 +156,7 @@ pub fn ui<B: Backend>(f: &mut Frame<B>, app: &mut App, title: &String) {
             InputMode::Normal => Style::default(),
             InputMode::Editing => Style::default().fg(Color::Yellow),
         })
-        .block(Block::default().borders(Borders::ALL).title("Search").title_alignment(tui::layout::Alignment::Center));
+        .block(Block::default().borders(Borders::ALL).title("Search"));
 
     f.render_widget(input, chunks[1]);
 
