@@ -1,8 +1,8 @@
 use crate::{
-    backend::{configuration::Configuration, storage::Project},
+    backend::{configuration::Configuration, project::Project, project::{Store, store, read}},
     interface::theme::*,
 };
-use std::path::PathBuf;
+use std::path::{PathBuf, Path};
 use tui::{
     backend::Backend,
     layout::{Constraint, Direction, Layout},
@@ -72,29 +72,40 @@ pub struct App {
 
 impl App {
     pub fn new(mut entries: Vec<PathBuf>, config: &Configuration) -> App {
-        println!("Detecting languages in project directory ... Please wait ...");
+        println!("Generating icons for projects directory ...");
 
-        let mut items = Vec::<Project>::new();
+        let mut projects = Vec::<Project>::new();
 
         if !config.include_files {
             entries = entries.into_iter().filter(|entry| entry.is_dir()).collect();
         }
 
-        for entry in entries {
-            if config.icons {
-                items.push(apply(entry.to_str().unwrap().to_owned()));
-            } else {
-                items.push(Project {
-                    path: entry.to_str().unwrap().to_owned(),
-                    theme: Theme {icon: " ".to_string(), color: WHITE},
-                })
+        match read(Path::new("test.json")) {
+            Ok(store) => projects = store.projects,
+            Err(_) => {
+                for entry in entries {
+                    if config.icons {
+                        projects.push(apply(entry.to_str().unwrap().to_owned()));
+                    } else {
+                        projects.push(Project {
+                            path: entry.to_str().unwrap().to_owned(),
+                            theme: Theme {icon: " ".to_string(), color: WHITE},
+                        })
+                    }
+                }
             }
         }
+
+        // let project_store = Store {
+        //     projects: items.clone()
+        // };
+
+        // store(project_store).unwrap();
 
         print!("{}[2J", 27 as char);
 
         App {
-            items: StatefulList::with_items(items), // items used here
+            items: StatefulList::with_items(projects), // items used here
         }
     }
 }

@@ -1,0 +1,103 @@
+{
+  "projects": [
+    {
+      "path": "/Users/ben/jump/ben-maclaurin.github.io",
+      "theme": {
+        "icon": " ",
+        "color": [
+          228,
+          104,
+          118
+        ]
+      }
+    },
+    {
+      "path": "/Users/ben/jump/tinyclean",
+      "theme": {
+        "icon": " ",
+        "color": [
+          255,
+          160,
+          102
+        ]
+      }
+    },
+    {
+      "path": "/Users/ben/jump/weiqi-rs",
+      "theme": {
+        "icon": " ",
+        "color": [
+          255,
+          160,
+          102
+        ]
+      }
+    },
+    {
+      "path": "/Users/ben/jump/aero",
+      "theme": {
+        "icon": "ﳑ ",
+        "color": [
+          163,
+          212,
+          213
+        ]
+      }
+    },
+    {
+      "path": "/Users/ben/jump/marginalia",
+      "theme": {
+        "icon": " ",
+        "color": [
+          210,
+          126,
+          153
+        ]
+      }
+    },
+    {
+      "path": "/Users/ben/jump/another_test",
+      "theme": {
+        "icon": " ",
+        "color": [
+          220,
+          215,
+          186
+        ]
+      }
+    },
+    {
+      "path": "/Users/ben/jump/test.txt",
+      "theme": {
+        "icon": " ",
+        "color": [
+          220,
+          215,
+          186
+        ]
+      }
+    },
+    {
+      "path": "/Users/ben/jump/git",
+      "theme": {
+        "icon": " ",
+        "color": [
+          220,
+          215,
+          186
+        ]
+      }
+    },
+    {
+      "path": "/Users/ben/jump/phoenix_live_view",
+      "theme": {
+        "icon": " ",
+        "color": [
+          149,
+          127,
+          184
+        ]
+      }
+    }
+  ]
+}
