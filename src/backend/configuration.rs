@@ -10,7 +10,6 @@ const CONFIG_LOCATION: &'static str = "/.config/hop/hop.yml";
 pub struct Configuration {
     pub directory: String,
     pub editor: String,
-    pub title: String,
     pub icons: bool,
     pub include_files: bool,
 }
@@ -20,7 +19,6 @@ impl Default for Configuration {
         Self {
             directory: String::from("Developer"),
             editor: String::from("code"),
-            title: String::from("Hop"),
             icons: false,
             include_files: false,
         }
@@ -54,7 +52,6 @@ impl Configuration {
         for (name, value) in config {
             match name.as_str() {
                 "directory" => self.directory = value,
-                "title" => self.title = value,
                 "icons" => self.icons = resolve_bool(value),
                 "include_files" => self.include_files = resolve_bool(value),
                 _ => self.editor = value,

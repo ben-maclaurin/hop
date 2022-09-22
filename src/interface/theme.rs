@@ -15,11 +15,12 @@ pub struct Theme {
 pub const WHITE: (u8, u8, u8) = (220, 215, 186);
 
 pub fn apply(path: String) -> Project {
-    let language = get_git_language_of_path(Path::new(&path));
+    let (language_enum, language) = get_git_language_of_path(Path::new(&path));
 
     Project {
         path,
-        theme: kanagawa(language),
+        theme: kanagawa(language_enum),
+        language,
     }
 }
 
@@ -95,6 +96,12 @@ fn kanagawa(language: Language) -> Theme {
             return Theme {
                 icon: "ﳑ ".to_string(),
                 color: (163, 212, 213),
+            }
+        }
+        Language::Lua => {
+            return Theme {
+                icon: " ".to_string(),
+                color: (126, 156, 216),
             }
         }
         _ => {

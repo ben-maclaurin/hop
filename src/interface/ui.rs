@@ -48,7 +48,7 @@ impl StatefulList {
                 x.path
                     .to_lowercase()
                     .as_str()
-                    .contains(input.to_lowercase().as_str())
+                    .contains(input.to_lowercase().as_str()) || x.language.as_str().contains(input.to_lowercase().as_str())
             })
             .collect();
 
@@ -153,7 +153,6 @@ pub fn ui<B: Backend>(f: &mut Frame<B>, app: &mut App, title: &String) {
             Block::default()
                 .borders(Borders::ALL)
                 .border_style(Style::default().fg(Color::Rgb(WHITE.0, WHITE.1, WHITE.2)))
-                .title_alignment(tui::layout::Alignment::Center)
                 .title(title.to_owned()),
         )
         .highlight_style(Style::default().bg(Color::Rgb(34, 50, 73)));

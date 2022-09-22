@@ -17,6 +17,7 @@ pub const PROJECT_STORE_LOCATION: &'static str = "/.config/hop/projects.json";
 pub struct Project {
     pub path: String,
     pub theme: Theme,
+    pub language: String,
 }
 
 #[derive(Deserialize, Serialize, Debug)]
@@ -89,6 +90,7 @@ pub fn no_sync(entries: Vec<PathBuf>) -> Vec<Project> {
                 icon: " ".to_string(),
                 color: WHITE,
             },
+            language: "".to_string(),
         })
     }
 
