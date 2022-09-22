@@ -1,4 +1,7 @@
-use crate::{backend::configuration::Configuration, interface::theme::*};
+use crate::{
+    backend::{configuration::Configuration, storage::Project},
+    interface::theme::*,
+};
 use std::path::PathBuf;
 use tui::{
     backend::Backend,
@@ -64,14 +67,14 @@ impl<T> StatefulList<T> {
 }
 
 pub struct App {
-    pub items: StatefulList<(String, Theme)>,
+    pub items: StatefulList<Project>,
 }
 
 impl App {
     pub fn new(mut entries: Vec<PathBuf>, config: &Configuration) -> App {
         println!("Detecting languages in project directory ... Please wait ...");
 
-        let mut items = Vec::<(String, Theme)>::new();
+        let mut items = Vec::<Project>::new();
 
         if !config.include_files {
             entries = entries.into_iter().filter(|entry| entry.is_dir()).collect();
@@ -81,10 +84,10 @@ impl App {
             if config.icons {
                 items.push(apply(entry.to_str().unwrap().to_owned()));
             } else {
-                items.push((
-                    entry.to_str().unwrap().to_owned(),
-                    (" ".to_string(), WHITE),
-                ))
+                items.push(Project {
+                    path: entry.to_str().unwrap().to_owned(),
+                    theme: Theme {icon: " ".to_string(), color: WHITE},
+                })
             }
         }
 
@@ -107,19 +110,16 @@ pub fn ui<B: Backend>(f: &mut Frame<B>, app: &mut App, title: &String) {
         .items
         .items
         .iter()
-        .map(|i| {
-            let (path, theme) = i;
-            let (icon, color) = theme;
-
+        .map(|project| {
             ListItem::new(vec![Spans::from(vec![Span::styled(
-                icon.to_string()
-                    + &path
+                project.theme.icon.to_string()
+                    + &project.path
                         .split("/")
                         .collect::<Vec<_>>()
                         .last()
                         .unwrap()
                         .to_string(),
-                Style::default().fg(Color::Rgb(color.0, color.1, color.2)),
+                Style::default().fg(Color::Rgb(project.theme.color.0, project.theme.color.1, project.theme.color.2)),
             )])])
         })
         .collect();

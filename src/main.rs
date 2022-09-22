@@ -77,7 +77,7 @@ fn run_app<B: Backend>(
                     KeyCode::Enter => {
                         Command::new(config.editor)
                             .args([app.items.items[app.items.state.selected().unwrap()]
-                                .0
+                                .path
                                 .to_string()])
                             .spawn()?
                             .wait()

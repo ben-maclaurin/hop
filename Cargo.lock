@@ -233,6 +233,7 @@ dependencies = [
  "directories",
  "serde",
  "serde_derive",
+ "serde_json",
  "tui",
 ]
 

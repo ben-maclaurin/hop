@@ -61,13 +61,12 @@ impl Configuration {
             }
         }
     }
-
 }
 
 fn resolve_bool(value: String) -> bool {
     match value.as_str() {
         "true" => true,
-        _ => false
+        _ => false,
     }
 }
 

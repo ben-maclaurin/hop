@@ -1,18 +1,23 @@
+use std::path::Path;
+
 use serde_derive::{Deserialize, Serialize};
 
 use crate::interface::theme::Theme;
 
 #[derive(Deserialize, Serialize, Debug)]
 pub struct Project {
-    path: String,
-    theme: Theme,
+    pub path: String,
+    pub theme: Theme,
 }
 
 #[derive(Deserialize, Serialize, Debug)]
 pub struct Store {
-    projects: Vec<Project>
+    pub projects: Vec<Project>,
 }
 
-fn store() {
-
+fn store(store: Store) -> Result<(), std::io::Error> {
+    std::fs::write(
+        Path::new("test.json"),
+        serde_json::to_string_pretty(&store).unwrap(),
+    )
 }
