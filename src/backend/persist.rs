@@ -1,1 +1,0 @@
-fn persist_directories() {}

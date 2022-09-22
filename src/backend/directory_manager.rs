@@ -5,7 +5,7 @@ use std::path::{Path, PathBuf};
 
 use crate::backend::configuration::Configuration;
 
-pub fn get_entries(config: &Configuration) -> Result<Vec<PathBuf>, std::io::Error> {
+pub fn get_projects(config: &Configuration) -> Result<Vec<PathBuf>, std::io::Error> {
     let home_dir = BaseDirs::new()
         .unwrap()
         .home_dir()
@@ -17,9 +17,9 @@ pub fn get_entries(config: &Configuration) -> Result<Vec<PathBuf>, std::io::Erro
 
     let target_dir = Path::new(&home_dir);
 
-    let entries = fs::read_dir(target_dir)?
+    let projects = fs::read_dir(target_dir)?
         .map(|res| res.map(|e| e.path()))
         .collect::<Result<Vec<_>, io::Error>>();
 
-    entries
+    projects
 }
