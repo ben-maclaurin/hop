@@ -1,4 +1,4 @@
-use crate::interface::theme;
+use crate::interface::theme::*;
 use std::path::PathBuf;
 use tui::{
     backend::Backend,
@@ -64,18 +64,18 @@ impl<T> StatefulList<T> {
 }
 
 pub struct App {
-    pub items: StatefulList<(String, Color, theme::Icon)>,
+    pub items: StatefulList<(String, Theme)>,
 }
 
 impl App {
     pub fn new(entries: Vec<PathBuf>) -> App {
         println!("Detecting languages in project directory ... Please wait ...");
 
-        let mut items = Vec::<(String, Color, theme::Icon)>::new();
+        let mut items = Vec::<(String, Theme)>::new();
 
         for entry in entries {
             if entry.is_dir() {
-                items.push(theme::apply(entry.to_str().unwrap().to_owned()));
+                items.push(apply(entry.to_str().unwrap().to_owned()));
             }
         }
 
@@ -98,7 +98,8 @@ pub fn ui<B: Backend>(f: &mut Frame<B>, app: &mut App, title: &String) {
         .items
         .iter()
         .map(|i| {
-            let (path, color, icon) = i;
+            let (path, theme) = i;
+            let (icon, color) = theme;
 
             ListItem::new(vec![Spans::from(vec![Span::styled(
                 icon.to_string()

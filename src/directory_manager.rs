@@ -5,12 +5,15 @@ use std::path::{Path, PathBuf};
 
 use crate::configuration::Configuration;
 
-pub fn get_home_dir() -> PathBuf {
-    BaseDirs::new().unwrap().home_dir().to_owned()
-}
-
 pub fn get_entries(config: Configuration) -> Result<Vec<PathBuf>, std::io::Error> {
-    let home_dir = get_home_dir().to_str().unwrap().to_owned() + "/" + &config.directory;
+    let home_dir = BaseDirs::new()
+        .unwrap()
+        .home_dir()
+        .to_str()
+        .unwrap()
+        .to_string()
+        + "/"
+        + &config.directory; // also bad
 
     let target_dir = Path::new(&home_dir);
 

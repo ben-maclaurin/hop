@@ -4,16 +4,14 @@ use tui::style::Color;
 use crate::linguist::{get_git_language_of_path, Language};
 
 pub type Icon = String;
+pub type Theme = (Icon, Color);
 
-pub fn apply(path: String) -> (String, Color, Icon) {
+pub fn apply(path: String) -> (String, Theme) {
     let language = get_git_language_of_path(Path::new(&path));
-
-    let (icon, color) = apply_theme(language);
-
-    (path, color, icon)
+    (path, kanagawa(language))
 }
 
-fn apply_theme(language: Language) -> (Icon, Color) {
+fn kanagawa(language: Language) -> Theme {
     match language {
         Language::Rust => return (" ".to_string(), Color::Rgb(255, 160, 102)),
         Language::TypeScript => return ("ﯤ ".to_string(), Color::Rgb(126, 156, 216)),

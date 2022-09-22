@@ -27,7 +27,7 @@ pub fn get_git_language_of_path(path: &Path) -> Language {
     }
 
     Language::Unspecified
-} 
+}
 
 fn parse_language(output: Output) -> Language {
     let output = from_utf8(&output.stdout).unwrap();

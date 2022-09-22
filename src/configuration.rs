@@ -1,7 +1,8 @@
 use config::Config;
+use config::Environment;
+use config::File;
+use directories::BaseDirs;
 use std::collections::HashMap;
-
-use crate::directory_manager::get_home_dir;
 
 const CONFIG_LOCATION: &'static str = "/.config/hop/hop.yml";
 
@@ -24,30 +25,40 @@ impl Default for Configuration {
 
 impl Configuration {
     pub fn init(&mut self) {
-        let config: Option<Config> = match Config::builder()
-            .add_source(config::File::with_name(
-                &(String::from(get_home_dir().to_str().unwrap()) + CONFIG_LOCATION),
+        let config = Config::builder()
+            .add_source(File::with_name(
+                &(BaseDirs::new()
+                    .unwrap()
+                    .home_dir()
+                    .to_str()
+                    .expect("could not find home dir")
+                    .to_string()
+                    + CONFIG_LOCATION),
             ))
-            .add_source(config::Environment::with_prefix("APP"))
-            .build()
-        {
-            Ok(config) => Some(config),
-            Err(_) => None,
-        };
+            .add_source(Environment::with_prefix("APP"))
+            .build();
 
         match config {
-            Some(config) => {
-                let config = config.try_deserialize::<HashMap<String, String>>().unwrap();
-
-                for (name, value) in config {
-                    match name.as_str() {
-                        "directory" => self.directory = value,
-                        "title" => self.title = value,
-                        _ => self.editor = value,
-                    }
-                }
+            Ok(config) => {
+                self.set_values(deserialize_config(config));
             }
-            _ => {}
+            Err(_) => {} // use defaults
         }
     }
+
+    fn set_values(&mut self, config: HashMap<String, String>) {
+        for (name, value) in config {
+            match name.as_str() {
+                "directory" => self.directory = value,
+                "title" => self.title = value,
+                _ => self.editor = value,
+            }
+        }
+    }
+}
+
+fn deserialize_config(config: Config) -> HashMap<String, String> {
+    config
+        .try_deserialize::<HashMap<String, String>>()
+        .expect("error reading config")
 }
