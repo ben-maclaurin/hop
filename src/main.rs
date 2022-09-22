@@ -17,6 +17,7 @@ use tui::{
 mod configuration;
 mod directory_manager;
 mod interface;
+mod linguist;
 use configuration::Configuration;
 use directory_manager::get_entries;
 use interface::ui::{ui, App};
