@@ -14,6 +14,8 @@ pub enum Language {
     EmacsLisp,
     Go,
     Lua,
+    CPlusPlus,
+    CSS,
     Unspecified,
 }
 
@@ -52,6 +54,8 @@ fn parse_language(output: Output) -> (Language, String) {
             "Emacs" => return (Language::EmacsLisp, "emacslisp".to_string()),
             "Go" => return (Language::Go, "go".to_string()),
             "Lua" => return (Language::Lua, "lua".to_string()),
+            "C++" => return (Language::CPlusPlus, "c++".to_string()),
+            "CSS" => return(Language::CSS, "css".to_string()),
             _ => return (Language::Unspecified, "".to_string()),
         }
     }

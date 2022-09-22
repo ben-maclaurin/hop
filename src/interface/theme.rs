@@ -104,6 +104,18 @@ fn kanagawa(language: Language) -> Theme {
                 color: (126, 156, 216),
             }
         }
+        Language::CPlusPlus => {
+            return Theme {
+                icon: " ".to_string(),
+                color: (210, 126, 153),
+            }
+        }
+        Language::CSS => {
+            return Theme {
+                icon: " ".to_string(),
+                color: (147, 138, 169),
+            }
+        }
         _ => {
             return Theme {
                 icon: " ".to_string(),
