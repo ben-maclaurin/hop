@@ -92,7 +92,11 @@ fn get_projects(config: &Configuration, entries: Vec<PathBuf>) -> Vec<Project> {
         }
     }
 
-    store_projects(projects)
+    return if config.icons {
+        store_projects(projects)
+    } else {
+        projects
+    }
 }
 
 fn store_projects(projects: Vec<Project>) -> Vec<Project> {
@@ -105,7 +109,7 @@ fn store_projects(projects: Vec<Project>) -> Vec<Project> {
 }
 
 impl App {
-    pub fn new(mut entries: Vec<PathBuf>, config: &Configuration) -> App {
+    pub fn new(mut entries: Vec<PathBuf>, config: &Configuration, sync: bool) -> App {
         println!("Generating icons for projects directory ...");
 
         if !config.include_files {
@@ -113,7 +117,13 @@ impl App {
         }
 
         let projects = match read(Path::new(&(BaseDirs::new().unwrap().home_dir().to_str().unwrap().to_string() + PROJECT_STORE_LOCATION))) {
-            Some(store) => store.projects,
+            Some(store) => {
+                if sync || !config.icons {
+                    get_projects(config, entries)
+                } else {
+                    store.projects
+                }
+            },
             None => get_projects(config, entries),
         };
 

@@ -18,7 +18,7 @@ pub struct Configuration {
 impl Default for Configuration {
     fn default() -> Self {
         Self {
-            directory: String::from("jump"),
+            directory: String::from("Developer"),
             editor: String::from("code"),
             title: String::from("Hop"),
             icons: false,

@@ -19,8 +19,17 @@ mod interface;
 use backend::configuration::Configuration;
 use backend::directory_manager::get_projects;
 use interface::ui::{ui, App};
+use std::env;
 
 fn main() -> Result<(), Box<dyn Error>> {
+    let args: Vec<String> = env::args().collect();
+
+    let mut sync: bool = false;
+
+    if args.len() > 1 && args[1] == "--sync" {
+        sync = true;
+    }
+
     let mut jump_config = Configuration::default();
 
     jump_config.init();
@@ -33,7 +42,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     let mut terminal = Terminal::new(backend)?;
 
     let tick_rate = Duration::from_millis(250);
-    let app = App::new(get_projects(&jump_config).unwrap(), &jump_config);
+    let app = App::new(get_projects(&jump_config).unwrap(), &jump_config, sync);
     let res = run_app(&mut terminal, app, tick_rate, jump_config);
 
     disable_raw_mode()?;
