@@ -17,7 +17,7 @@ use tui::{
 mod backend;
 mod interface;
 use backend::configuration::Configuration;
-use backend::project::get_projects;
+use backend::project::get_project_paths;
 use interface::ui::{ui, App};
 use std::env;
 
@@ -42,7 +42,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     let mut terminal = Terminal::new(backend)?;
 
     let tick_rate = Duration::from_millis(250);
-    let app = App::new(get_projects(&jump_config).unwrap(), &jump_config, sync);
+    let app = App::new(get_project_paths(&jump_config).unwrap(), &jump_config, sync);
     let res = run_app(&mut terminal, app, tick_rate, jump_config);
 
     disable_raw_mode()?;

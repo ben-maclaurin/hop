@@ -6,7 +6,7 @@ use crate::backend::{
 };
 use serde_derive::{Deserialize, Serialize};
 
-#[derive(Deserialize, Serialize, Debug, Clone)]
+#[derive(Deserialize, Serialize, Debug, Clone, PartialEq)]
 pub struct Theme {
     pub icon: String,
     pub color: (u8, u8, u8),

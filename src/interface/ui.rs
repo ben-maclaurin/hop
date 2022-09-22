@@ -1,11 +1,12 @@
 use crate::{
     backend::{
         configuration::Configuration,
-        project::{Project, PROJECT_STORE_LOCATION},
-        project::{read, store, Store},
+        project::read,
+        project::{get_projects, Project, SyncType, PROJECT_STORE_LOCATION},
     },
     interface::theme::*,
 };
+use directories::BaseDirs;
 use std::path::{Path, PathBuf};
 use tui::{
     backend::Backend,
@@ -15,7 +16,6 @@ use tui::{
     widgets::{Block, Borders, List, ListItem, ListState},
     Frame,
 };
-use directories::BaseDirs;
 
 pub struct StatefulList<T> {
     pub state: ListState,
@@ -75,39 +75,6 @@ pub struct App {
     pub items: StatefulList<Project>,
 }
 
-fn get_projects(config: &Configuration, entries: Vec<PathBuf>) -> Vec<Project> {
-    let mut projects = Vec::<Project>::new();
-
-    for entry in entries {
-        if config.icons {
-            projects.push(apply(entry.to_str().unwrap().to_owned()));
-        } else {
-            projects.push(Project {
-                path: entry.to_str().unwrap().to_owned(),
-                theme: Theme {
-                    icon: " ".to_string(),
-                    color: WHITE,
-                },
-            })
-        }
-    }
-
-    return if config.icons {
-        deep_sync(projects)
-    } else {
-        projects
-    }
-}
-
-fn deep_sync(projects: Vec<Project>) -> Vec<Project> {
-    store(Store {
-        projects: projects.clone(),
-    })
-    .unwrap();
-
-    projects
-}
-
 impl App {
     pub fn new(mut entries: Vec<PathBuf>, config: &Configuration, sync: bool) -> App {
         println!("Generating icons for projects directory ...");
@@ -116,15 +83,31 @@ impl App {
             entries = entries.into_iter().filter(|entry| entry.is_dir()).collect();
         }
 
-        let projects = match read(Path::new(&(BaseDirs::new().unwrap().home_dir().to_str().unwrap().to_string() + PROJECT_STORE_LOCATION))) {
-            Some(store) => {
-                if sync || !config.icons {
-                    get_projects(config, entries)
+        let projects = match read(Path::new(
+            &(BaseDirs::new()
+                .unwrap()
+                .home_dir()
+                .to_str()
+                .unwrap()
+                .to_string()
+                + PROJECT_STORE_LOCATION),
+        )) {
+            Some(_) => {
+                if !config.icons {
+                    get_projects(entries, SyncType::None)
+                } else if sync {
+                    get_projects(entries, SyncType::Deep)
                 } else {
-                    store.projects
+                    get_projects(entries, SyncType::Shallow)
                 }
-            },
-            None => get_projects(config, entries),
+            }
+            None => {
+                if !config.icons {
+                    get_projects(entries, SyncType::None)
+                } else {
+                    get_projects(entries, SyncType::Deep)
+                }
+            }
         };
 
         print!("{}[2J", 27 as char);
