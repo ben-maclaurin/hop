@@ -78,8 +78,7 @@ fn run_app<B: Backend>(
                         Command::new(config.editor)
                             .args([app.items.items[app.items.state.selected().unwrap()]
                                 .0
-                                .to_string()
-                                + "/"])
+                                .to_string()])
                             .spawn()?
                             .wait()
                             .unwrap();
