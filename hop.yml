@@ -1,3 +1,5 @@
+# Example config file
+
 directory: "Developer" # Starts at $HOME, so this would resolve to ~/Developer/
 title: "Projects" # default: "Hop"
 icons: "true" # default: false
