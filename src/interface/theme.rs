@@ -1,76 +1,16 @@
-use std::{io, str};
-use std::{path::Path, process::Command};
+use std::path::Path;
 use tui::style::Color;
 
-pub enum Language {
-    Rust,
-    TypeScript,
-    JavaScript,
-    Swift,
-    Elixir,
-    Ruby,
-    Markdown,
-    HTML,
-    Python,
-    Java,
-    EmacsLisp,
-    Go,
-    Unknown,
-}
+use crate::linguist::{get_git_language_of_path, Language};
 
 pub type Icon = String;
-type FilePath = String;
 
-pub fn apply(path: String) -> (FilePath, Color, Icon) {
-    let (icon, color) = apply_theme(resolve_language(path.clone()).unwrap());
+pub fn apply(path: String) -> (String, Color, Icon) {
+    let language = get_git_language_of_path(Path::new(&path));
+
+    let (icon, color) = apply_theme(language);
 
     (path, color, icon)
-}
-
-fn resolve_language(path: FilePath) -> Result<Language, io::Error> {
-    if Path::new(&path).is_dir() {
-        let output = Command::new("github-linguist")
-            .args([path.clone()])
-            .output();
-
-        match output {
-            Ok(_) => {
-                match str::from_utf8(&output.unwrap().stdout) {
-                    Ok(output) => {
-                        if output.len() > 0 {
-                            return Ok(match_language(
-                                output.split_whitespace().collect::<Vec<_>>()[2].to_string(),
-                            ));
-                        } else {
-                            return Ok(Language::Unknown);
-                        }
-                    }
-                    Err(_) => return Ok(Language::Unknown),
-                };
-            }
-            Err(_) => return Ok(Language::Unknown),
-        }
-    } else {
-        Ok(Language::Unknown)
-    }
-}
-
-fn match_language(language: String) -> Language {
-    match language.as_str() {
-        "Rust" => return Language::Rust,
-        "TypeScript" => return Language::TypeScript,
-        "JavaScript" => return Language::JavaScript,
-        "Swift" => return Language::Swift,
-        "Elixir" => return Language::Elixir,
-        "Ruby" => return Language::Ruby,
-        "Markdown" => return Language::Markdown,
-        "HTML" => return Language::HTML,
-        "Python" => return Language::Python,
-        "Java" => return Language::Java,
-        "Emacs" => return Language::EmacsLisp,
-        "Go" => return Language::Go,
-        _ => return Language::Unknown,
-    }
 }
 
 fn apply_theme(language: Language) -> (Icon, Color) {
