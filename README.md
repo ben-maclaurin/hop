@@ -2,7 +2,7 @@
 
 Hop is a [TUI](https://github.com/fdehau/tui-rs)-based project viewer. It is built to somewhat replicate Emacs' [Projectile](https://github.com/bbatsov/projectile) tool.
 
-https://user-images.githubusercontent.com/54992484/191870516-d7f456ac-9e6b-40f5-b083-7f432ca7208c.mp4
+https://user-images.githubusercontent.com/54992484/191870877-772b13cc-79fd-4481-bfaa-34c61728796d.mp4
 
 ## Prerequisites
 
