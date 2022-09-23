@@ -3,7 +3,6 @@ use serde_derive::{Deserialize, Serialize};
 
 use crate::interface::theme::apply;
 use crate::interface::theme::Theme;
-use crate::interface::theme::WHITE;
 
 use std::fs;
 use std::io;
@@ -85,6 +84,9 @@ impl ProjectList {
         }
     }
 
+    ///
+    /// Save Self to $HOME/.config/hop/projects.json
+    ///
     pub fn save(&self) -> Result<(), std::io::Error> {
         std::fs::write(
             Path::new(
@@ -100,6 +102,9 @@ impl ProjectList {
         )
     }
 
+    ///
+    /// Load Self from $HOME/.config/hop/projects.json
+    ///
     pub fn load(mut self, path: String) -> Result<Self, serde_json::Error> {
         match serde_json::from_str::<ProjectList>(&path) {
             Ok(project_list) => {
@@ -110,11 +115,14 @@ impl ProjectList {
         }
     }
 
+    ///
+    /// Shallow compare Self with $HOME/.config/hop/projects.json
+    ///
     fn shallow(&mut self, paths: Vec<PathBuf>) {
         for path in paths {
             if !self
                 .projects
-                .clone()
+                .clone() // I want to remove this by using Lifetimes.
                 .into_iter()
                 .map(|p| p.path)
                 .collect::<Vec<_>>()
@@ -125,6 +133,9 @@ impl ProjectList {
         }
     }
 
+    ///
+    /// Index Self with an index level
+    ///
     pub fn index(mut self, level: Option<IndexLevel>, paths: Vec<PathBuf>) -> Self {
         if let Some(level) = level {
             match level {
