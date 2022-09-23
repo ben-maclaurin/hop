@@ -79,7 +79,7 @@ fn run_app<B: Backend>(
     let mut last_tick = Instant::now();
 
     loop {
-        terminal.draw(|f| ui(f, &mut app, &config.directory))?;
+        terminal.draw(|f| ui(f, &mut app, &config))?;
 
         let timeout = tick_rate
             .checked_sub(last_tick.elapsed())

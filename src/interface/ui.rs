@@ -117,11 +117,17 @@ impl App {
     }
 }
 
-pub fn ui<B: Backend>(f: &mut Frame<B>, app: &mut App, title: &String) {
+pub fn ui<B: Backend>(f: &mut Frame<B>, app: &mut App, config: &Configuration) {
+    let mut sizes: (Constraint, Constraint) = (Constraint::Percentage(92), Constraint::Percentage(8));
+
+    if !config.show_search {
+        sizes = (Constraint::Percentage(100), Constraint::Percentage(8));
+    }
+
     let chunks = Layout::default()
         .direction(Direction::Vertical)
         .horizontal_margin(25)
-        .constraints([Constraint::Percentage(90), Constraint::Percentage(10)].as_ref())
+        .constraints([sizes.0, sizes.1].as_ref())
         .split(f.size());
 
     let items: Vec<ListItem> = app
@@ -153,7 +159,7 @@ pub fn ui<B: Backend>(f: &mut Frame<B>, app: &mut App, title: &String) {
             Block::default()
                 .borders(Borders::ALL)
                 .border_style(Style::default().fg(Color::Rgb(WHITE.0, WHITE.1, WHITE.2)))
-                .title(title.to_owned()),
+                .title(config.directory.to_owned()),
         )
         .highlight_style(Style::default().bg(Color::Rgb(34, 50, 73)));
 

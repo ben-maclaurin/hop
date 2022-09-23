@@ -12,6 +12,7 @@ pub struct Configuration {
     pub editor: String,
     pub icons: bool,
     pub include_files: bool,
+    pub show_search: bool,
 }
 
 impl Default for Configuration {
@@ -21,6 +22,7 @@ impl Default for Configuration {
             editor: String::from("code"),
             icons: false,
             include_files: false,
+            show_search: true,
         }
     }
 }
@@ -54,6 +56,7 @@ impl Configuration {
                 "directory" => self.directory = value,
                 "icons" => self.icons = resolve_bool(value),
                 "include_files" => self.include_files = resolve_bool(value),
+                "show_search" => self.show_search = resolve_bool(value),
                 _ => self.editor = value,
             }
         }
