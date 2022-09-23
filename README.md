@@ -18,22 +18,48 @@ Navigation is Vim-based (`j` to go down, `k` to go up).
 
 Press the `RETURN` key on a project to open it in your favourite editor.
 
+Running Hop with the `sync` flag (e.g. `hop -s`) will initiate a sync (Hop will re-index all of your projects). Read more ()
+
 ## Configuration
 
 Hop expects your configration file to be stored at `$HOME/.config/hop/hop.yml`. See [hop.yml](https://github.com/ben-maclaurin/hop/blob/main/hop.yml) for an example configuration.
 
 The following options are available:
 
-| Option            | Description                                                                                                                                | Default     |   |   |
-|-------------------|--------------------------------------------------------------------------------------------------------------------------------------------|-------------|---|---|
-| `directory`       | Your projects directory                                                                                                                    | `Developer` |   |   |
-| `icons`           | Toggles icons. Requires a [Nerd Font](https://www.nerdfonts.com/font-downloads) and [Linguist](https://github.com/github/linguist) to work | `false`     |   |   |
-| `editor`          | The launch command for your chosen editor (e.g. `code` for VSCode)                                                                         | `code`      |   |   |
-| `include_files`   | If enabled, includes files as projects                                                                                                     | `false`     |   |   |
-| `show_search`     | When enabled, displays a search bar below the project list                                                                                 | `true`      |   |   |
-| `start_in_insert` | Determines if Hop should start in `insert mode` (search bar focused)                                                                       | `true`      |   |   |
+| Option            | Description                                                                                                                                | Default     |
+|-------------------|--------------------------------------------------------------------------------------------------------------------------------------------|-------------|
+| `directory`       | Your projects directory                                                                                                                    | `Developer` |
+| `icons`           | Toggles icons. Requires a [Nerd Font](https://www.nerdfonts.com/font-downloads) and [Linguist](https://github.com/github/linguist) to work | `false`     |
+| `editor`          | The launch command for your chosen editor (e.g. `code` for VSCode)                                                                         | `code`      |
+| `include_files`   | If enabled, includes files as projects                                                                                                     | `false`     |
+| `show_search`     | When enabled, displays a search bar below the project list                                                                                 | `true`      |
+| `start_in_insert` | Determines if Hop should start in `insert mode` (search bar focused)                                                                       | `true`      |
 
-## Themes
+## Languages and Icons
+
+To display languages and icons, your terminal or emulator font should be a [Nerd Font](https://www.nerdfonts.com/font-downloads). Hop uses [Linguist](https://github.com/github/linguist) to detect project languages.
+
+If you have `icons` enabled, the first time you run Hop it may take a few minutes to index all of your projects. Hop keeps track of previously indexed projects in a `.json` file. This reduces start times for future executions. 
+
+If the dominant language of a project changes, you can update this manually in the `.json` or resync your project list with `hop -s`.
+
+Currently supported languages:
+
+- Rust,
+- TypeScript,
+- JavaScript,
+- Swift,
+- Elixir,
+- Ruby,
+- Markdown,
+- HTML,
+- Python,
+- Java,
+- EmacsLisp,
+- Go,
+- Lua,
+- CPlusPlus,
+- CSS,
 
 ## Contributing
 
