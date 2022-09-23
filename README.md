@@ -71,6 +71,9 @@ Currently supported languages:
 - Lua
 - C++
 - CSS
+- Clojure
+- Vue
+- PHP
 
 ## Themes
 

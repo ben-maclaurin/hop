@@ -16,6 +16,9 @@ pub enum Language {
     Lua,
     CPlusPlus,
     CSS,
+    Clojure,
+    Vue,
+    PHP,
     Unspecified,
 }
 
@@ -56,6 +59,9 @@ fn parse_language(output: Output) -> (Language, String) {
             "Lua" => return (Language::Lua, "lua".to_string()),
             "C++" => return (Language::CPlusPlus, "c++".to_string()),
             "CSS" => return(Language::CSS, "css".to_string()),
+            "Clojure" => return(Language::Clojure, "clojure".to_string()),
+            "Vue" => return(Language::Vue, "vue".to_string()),
+            "PHP" => return(Language::PHP, "php".to_string()),
             _ => return (Language::Unspecified, "".to_string()),
         }
     }

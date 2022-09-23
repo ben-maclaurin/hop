@@ -116,6 +116,24 @@ fn kanagawa(language: Language) -> Theme {
                 color: (147, 138, 169),
             }
         }
+        Language::Clojure => {
+            return Theme {
+                icon: " ".to_string(),
+                color: (228, 104, 118),
+            }
+        }
+        Language::Vue => {
+            return Theme {
+                icon: "﵂ ".to_string(),
+                color: (152, 187, 108),
+            }
+        }
+        Language::PHP => {
+            return Theme {
+                icon: " ".to_string(),
+                color: (149, 127, 184),
+            }
+        }
         _ => {
             return Theme {
                 icon: " ".to_string(),
