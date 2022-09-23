@@ -53,6 +53,38 @@ pub enum IndexLevel {
 }
 
 impl ProjectList {
+    pub fn init(self, paths: Vec<PathBuf>, force_deep_sync: bool, config: &Configuration) -> Self {
+        match std::fs::read_to_string(Path::new(
+            &(BaseDirs::new()
+                .unwrap()
+                .home_dir()
+                .to_str()
+                .unwrap()
+                .to_string()
+                + PROJECT_STORE_LOCATION),
+        )) {
+            Ok(path) => match self.load(path) {
+                Ok(list) => {
+                    if !config.icons {
+                        return list.index(None, paths);
+                    } else if force_deep_sync {
+                        return list.index(Some(IndexLevel::Deep), paths);
+                    } else {
+                        return list.index(Some(IndexLevel::Shallow), paths);
+                    }
+                }
+                Err(_) => return ProjectList::empty(),
+            },
+            Err(_) => {
+                if !config.icons {
+                    self.index(None, paths)
+                } else {
+                    self.index(Some(IndexLevel::Deep), paths)
+                }
+            }
+        }
+    }
+
     pub fn save(&self) -> Result<(), std::io::Error> {
         std::fs::write(
             Path::new(
@@ -71,10 +103,25 @@ impl ProjectList {
     pub fn load(mut self, path: String) -> Result<Self, serde_json::Error> {
         match serde_json::from_str::<ProjectList>(&path) {
             Ok(project_list) => {
-                self = project_list;
+                self.projects = project_list.projects;
                 return Ok(self);
             }
             Err(e) => return Err(e),
+        }
+    }
+
+    fn shallow(&mut self, paths: Vec<PathBuf>) {
+        for path in paths {
+            if !self
+                .projects
+                .clone()
+                .into_iter()
+                .map(|p| p.path)
+                .collect::<Vec<_>>()
+                .contains(&path.to_str().unwrap().to_owned())
+            {
+                self.projects.push(apply(path.to_str().unwrap().to_owned()));
+            }
         }
     }
 
@@ -82,19 +129,7 @@ impl ProjectList {
         if let Some(level) = level {
             match level {
                 IndexLevel::Shallow => {
-                    for path in paths {
-                        if !self
-                            .projects
-                            .clone()
-                            .into_iter()
-                            .map(|p| p.path)
-                            .collect::<Vec<_>>()
-                            .contains(&path.to_str().unwrap().to_owned())
-                        {
-                            self.projects.push(apply(path.to_str().unwrap().to_owned()));
-                        }
-                    }
-
+                    self.shallow(paths);
                     self.save().unwrap();
                 }
                 IndexLevel::Deep => {
@@ -116,44 +151,6 @@ impl ProjectList {
         }
 
         self
-    }
-}
-
-pub fn get_project_list(
-    paths: Vec<PathBuf>,
-    force_deep_sync: bool,
-    config: &Configuration,
-) -> ProjectList {
-    let project_list = ProjectList::empty();
-
-    match std::fs::read_to_string(Path::new(
-        &(BaseDirs::new()
-            .unwrap()
-            .home_dir()
-            .to_str()
-            .unwrap()
-            .to_string()
-            + PROJECT_STORE_LOCATION),
-    )) {
-        Ok(path) => match project_list.load(path) {
-            Ok(list) => {
-                if !config.icons {
-                    return list.index(None, paths);
-                } else if force_deep_sync {
-                    return list.index(Some(IndexLevel::Deep), paths);
-                } else {
-                    return list.index(Some(IndexLevel::Shallow), paths);
-                }
-            }
-            Err(_) => return ProjectList::empty(),
-        },
-        Err(_) => {
-            if !config.icons {
-                project_list.index(None, paths)
-            } else {
-                project_list.index(Some(IndexLevel::Deep), paths)
-            }
-        }
     }
 }
 

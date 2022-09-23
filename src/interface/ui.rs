@@ -1,7 +1,7 @@
 use crate::{
     backend::{
         configuration::Configuration,
-        project::{get_project_list, Project},
+        project::{Project, ProjectList, Empty},
     },
     interface::theme::*,
     InputMode,
@@ -114,8 +114,8 @@ impl App {
 
         App {
             items: StatefulList::with_items(
-                get_project_list(entries.clone(), force_deep_sync, config).projects,
-                get_project_list(entries, force_deep_sync, config).projects,
+                ProjectList::empty().init(entries.clone(), force_deep_sync, config).projects,
+                ProjectList::empty().init(entries, force_deep_sync, config).projects 
             ),
             input: String::new(),
             input_mode: default_mode,
