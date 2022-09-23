@@ -145,7 +145,6 @@ pub fn ui<B: Backend>(f: &mut Frame<B>, app: &mut App, config: &Configuration) {
         .items
         .items
         .iter()
-        .rev()
         .map(|project| {
             ListItem::new(vec![Spans::from(vec![Span::styled(
                 project.theme.icon.to_string()
