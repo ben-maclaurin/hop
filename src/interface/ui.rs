@@ -6,7 +6,7 @@ use crate::{
     interface::theme::*,
     InputMode,
 };
-use std::{path::PathBuf, process::{Command, self}};
+use std::path::PathBuf;
 use tui::{
     backend::Backend,
     layout::{Constraint, Direction, Layout},
@@ -40,11 +40,6 @@ impl StatefulList {
     }
 
     pub fn filter(&mut self, input: &String) {
-        if input == &":wq" {
-            print!("{}[2J", 27 as char);
-            process::exit(0x0100);
-        }
-
         let filtered: Vec<Project> = self
             .projects
             .clone()

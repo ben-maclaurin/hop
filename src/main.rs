@@ -2,6 +2,7 @@ use crossterm::{
     event::{self, DisableMouseCapture, EnableMouseCapture, Event, KeyCode},
     execute,
     terminal::{disable_raw_mode, enable_raw_mode, EnterAlternateScreen, LeaveAlternateScreen},
+	ExecutableCommand,
 };
 use std::process::Command;
 use std::{
@@ -88,7 +89,10 @@ fn run_app<B: Backend>(
             if let Event::Key(key) = event::read()? {
                 match app.input_mode {
                     InputMode::Normal => match key.code {
-                        KeyCode::Esc => return Ok(()),
+                        KeyCode::Esc => {
+                            io::stdout().execute(LeaveAlternateScreen).map(|_f| ()).unwrap();
+                            return Ok(())
+                        },
                         KeyCode::Left => app.items.unselect(),
                         KeyCode::Char('j') => app.items.next(),
                         KeyCode::Char('k') => app.items.previous(),
@@ -118,6 +122,7 @@ fn run_app<B: Backend>(
                     },
                     InputMode::Editing => match key.code {
                         KeyCode::Esc => {
+                            io::stdout().execute(LeaveAlternateScreen).map(|_f| ()).unwrap();
                             return Ok(());
                         },
                         KeyCode::Char(c) => {
