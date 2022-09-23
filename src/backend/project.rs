@@ -122,7 +122,7 @@ impl ProjectList {
         for path in paths {
             if !self
                 .projects
-                .clone() // I want to remove this by using Lifetimes.
+                .clone()
                 .into_iter()
                 .map(|p| p.path)
                 .collect::<Vec<_>>()
