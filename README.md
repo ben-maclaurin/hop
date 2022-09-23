@@ -1,6 +1,6 @@
 # Hop
 
-Hop is a [TUI](https://github.com/fdehau/tui-rs)-based project viewer. Inpsired by [Projectile for Emacs](https://github.com/bbatsov/projectile), although nowhere near as feature-complete.
+Hop is a [TUI](https://github.com/fdehau/tui-rs)-based project viewer. Loosely inpsired by [Projectile for Emacs](https://github.com/bbatsov/projectile), although nowhere near as feature-complete.
 
 https://user-images.githubusercontent.com/54992484/191871726-57dd6f16-7a2b-4d91-bbfd-f856b139b6f2.mp4
 
