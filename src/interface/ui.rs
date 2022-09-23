@@ -167,6 +167,7 @@ pub fn ui<B: Backend>(f: &mut Frame<B>, app: &mut App, config: &Configuration) {
                 .border_style(Style::default().fg(Color::Rgb(WHITE.0, WHITE.1, WHITE.2)))
                 .title(config.directory.to_owned()),
         )
+        .highlight_symbol("> ")
         .highlight_style(Style::default().bg(Color::Rgb(34, 50, 73)));
 
     let input = Paragraph::new(app.input.as_ref())
