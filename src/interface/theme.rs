@@ -1,7 +1,7 @@
 use std::path::Path;
 
 use crate::backend::{
-    linguist::{get_git_language_of_path, Language},
+    language::{detect_language, LanguageType},
     project::{Empty, Project},
 };
 use serde_derive::{Deserialize, Serialize};
@@ -16,7 +16,7 @@ pub struct Theme {
 }
 
 pub trait Definition {
-    fn load(lanauge: Language) -> Theme;
+    fn load(lanauge: &LanguageType) -> Theme;
 }
 
 pub const WHITE: (u8, u8, u8) = (220, 215, 186);
@@ -31,9 +31,9 @@ impl Empty for Theme {
 }
 
 pub fn apply(path: String) -> Project {
-    let (language_enum, language) = get_git_language_of_path(Path::new(&path));
+    let language = detect_language(Path::new(&path));
 
-    let theme = Kanagawa::load(language_enum);
+    let theme = Kanagawa::load(&language.language);
 
     Project {
         path,

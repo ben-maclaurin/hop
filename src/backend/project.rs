@@ -10,13 +10,15 @@ use std::path::{Path, PathBuf};
 
 use crate::backend::configuration::Configuration;
 
+use super::language::Language;
+
 pub const PROJECT_STORE_LOCATION: &'static str = "/.config/hop/projects.json";
 
 #[derive(Deserialize, Serialize, Debug, Clone, PartialEq)]
 pub struct Project {
     pub path: String,
     pub theme: Theme,
-    pub language: String,
+    pub language: Language,
 }
 
 #[derive(Deserialize, Serialize, Debug)]
@@ -33,16 +35,14 @@ impl Empty for Project {
         Self {
             path: "".to_string(),
             theme: Theme::empty(),
-            language: "".to_string(),
+            language: Language::empty(),
         }
     }
 }
 
 impl Empty for ProjectList {
     fn empty() -> Self {
-        Self {
-            projects: vec![],
-        }
+        Self { projects: vec![] }
     }
 }
 
@@ -156,7 +156,7 @@ impl ProjectList {
                 self.projects.push(Project {
                     path: path.to_str().unwrap().to_string(),
                     theme: Theme::empty(),
-                    language: "".to_string(),
+                    language: Language::empty(),
                 });
             }
         }

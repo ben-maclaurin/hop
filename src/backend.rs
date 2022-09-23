@@ -1,3 +1,3 @@
 pub mod configuration;
-pub mod linguist;
+pub mod language;
 pub mod project;

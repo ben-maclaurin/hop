@@ -1,7 +1,7 @@
 use crate::{
     backend::{
         configuration::Configuration,
-        project::{Project, ProjectList, Empty},
+        project::{Empty, Project, ProjectList},
     },
     interface::theme::*,
     InputMode,
@@ -49,7 +49,7 @@ impl StatefulList {
                     .to_lowercase()
                     .as_str()
                     .contains(input.to_lowercase().as_str())
-                    || x.language.as_str().contains(input.to_lowercase().as_str())
+                    || x.language.query.as_str().contains(input.to_lowercase().as_str())
             })
             .collect();
 
@@ -114,8 +114,12 @@ impl App {
 
         App {
             items: StatefulList::with_items(
-                ProjectList::empty().init(entries.clone(), force_deep_sync, config).projects,
-                ProjectList::empty().init(entries, force_deep_sync, config).projects 
+                ProjectList::empty()
+                    .init(entries.clone(), force_deep_sync, config)
+                    .projects,
+                ProjectList::empty()
+                    .init(entries, force_deep_sync, config)
+                    .projects,
             ),
             input: String::new(),
             input_mode: default_mode,
