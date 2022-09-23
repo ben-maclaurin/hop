@@ -18,7 +18,7 @@ Navigation is Vim-based (`j` to go down, `k` to go up).
 
 Press the `RETURN` key on a project to open it in your favourite editor.
 
-Running Hop with the `sync` flag (e.g. `hop -s`) will initiate a sync (Hop will re-index all of your projects). Read more ()
+Running Hop with the `sync` flag (e.g. `hop -s`) will initiate a sync (Hop will re-index all of your projects). Read more in [Languages and Icons](https://github.com/ben-maclaurin/hop#languages-and-icons)
 
 ## Configuration
 
@@ -45,23 +45,25 @@ If the dominant language of a project changes, you can update this manually in t
 
 Currently supported languages:
 
-- Rust,
-- TypeScript,
-- JavaScript,
-- Swift,
-- Elixir,
-- Ruby,
-- Markdown,
-- HTML,
-- Python,
-- Java,
-- EmacsLisp,
-- Go,
-- Lua,
-- CPlusPlus,
-- CSS,
+- Rust
+- TypeScript
+- JavaScript
+- Swift
+- Elixir
+- Ruby
+- Markdown
+- HTML
+- Python
+- Java
+- EmacsLisp
+- Go
+- Lua
+- CPlusPlus
+- CSS
 
 ## Contributing
+
+Contributions are welcome (I am new to Rust).
 
 ## License
 [MIT](https://choosealicense.com/licenses/mit/)
