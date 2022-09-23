@@ -177,7 +177,7 @@ pub fn ui<B: Backend>(f: &mut Frame<B>, app: &mut App, config: &Configuration) {
     let input = Paragraph::new(app.input.as_ref())
         .style(match app.input_mode {
             InputMode::Normal => Style::default(),
-            InputMode::Editing => Style::default().fg(Color::Yellow),
+            InputMode::Editing => Style::default().fg(Color::White),
         })
         .block(Block::default().borders(Borders::ALL).title("Search"));
 
