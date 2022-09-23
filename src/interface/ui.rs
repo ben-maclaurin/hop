@@ -6,7 +6,7 @@ use crate::{
     interface::theme::*,
     InputMode,
 };
-use std::path::PathBuf;
+use std::{path::PathBuf, process::{Command, self}};
 use tui::{
     backend::Backend,
     layout::{Constraint, Direction, Layout},
@@ -40,6 +40,11 @@ impl StatefulList {
     }
 
     pub fn filter(&mut self, input: &String) {
+        if input == &":wq" {
+            print!("{}[2J", 27 as char);
+            process::exit(0x0100);
+        }
+
         let filtered: Vec<Project> = self
             .projects
             .clone()
@@ -167,7 +172,7 @@ pub fn ui<B: Backend>(f: &mut Frame<B>, app: &mut App, config: &Configuration) {
                 .border_style(Style::default().fg(Color::Rgb(WHITE.0, WHITE.1, WHITE.2)))
                 .title(config.directory.to_owned()),
         )
-        .highlight_symbol("> ")
+        .highlight_symbol(&config.highlight_symbol)
         .highlight_style(Style::default().bg(Color::Rgb(34, 50, 73)));
 
     let input = Paragraph::new(app.input.as_ref())

@@ -88,13 +88,15 @@ fn run_app<B: Backend>(
             if let Event::Key(key) = event::read()? {
                 match app.input_mode {
                     InputMode::Normal => match key.code {
-                        KeyCode::Char('q') => return Ok(()),
+                        KeyCode::Esc => return Ok(()),
                         KeyCode::Left => app.items.unselect(),
                         KeyCode::Char('j') => app.items.next(),
                         KeyCode::Char('k') => app.items.previous(),
                         KeyCode::Char('g') => app.items.first(),
                         KeyCode::Char('G') => app.items.last(),
                         KeyCode::Char('/') => {
+                            app.input = "".to_string();
+                            app.items.items = app.items.projects.clone();
                             app.input_mode = InputMode::Editing;
                         }
                         KeyCode::Enter => {
@@ -111,6 +113,9 @@ fn run_app<B: Backend>(
                         _ => {}
                     },
                     InputMode::Editing => match key.code {
+                        KeyCode::Esc => {
+                            return Ok(());
+                        },
                         KeyCode::Char(c) => {
                             app.input.push(c);
                             app.items.filter(&app.input);

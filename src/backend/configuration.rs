@@ -14,6 +14,7 @@ pub struct Configuration {
     pub include_files: bool,
     pub show_search: bool,
     pub start_in_insert: bool,
+    pub highlight_symbol: String,
 }
 
 impl Default for Configuration {
@@ -25,6 +26,7 @@ impl Default for Configuration {
             include_files: false,
             show_search: true,
             start_in_insert: true,
+            highlight_symbol: "".to_string(),
         }
     }
 }
@@ -60,6 +62,7 @@ impl Configuration {
                 "include_files" => self.include_files = resolve_bool(value),
                 "show_search" => self.show_search = resolve_bool(value),
                 "start_in_insert" => self.start_in_insert = resolve_bool(value),
+                "highlight_symbol" => self.highlight_symbol = value,
                 _ => self.editor = value,
             }
         }
