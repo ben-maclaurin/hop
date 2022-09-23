@@ -25,37 +25,35 @@ pub struct ProjectList {
     pub projects: Vec<Project>,
 }
 
-pub fn read(path: &Path) -> Option<ProjectList> {
-    match std::fs::read_to_string(&path) {
-        Ok(string) => Some(serde_json::from_str::<ProjectList>(&string).unwrap()),
-        Err(_) => None,
-    }
+pub trait Empty {
+    fn empty() -> Self;
 }
 
-pub trait New {
-    fn new() -> Self;
-}
-
-impl New for Project {
-    fn new() -> Self {
+impl Empty for Project {
+    fn empty() -> Self {
         Self {
             path: "".to_string(),
-            theme: Theme::new(),
+            theme: Theme::empty(),
             language: "".to_string(),
         }
     }
 }
 
-impl New for ProjectList {
-    fn new() -> Self {
+impl Empty for ProjectList {
+    fn empty() -> Self {
         Self {
-            projects: vec![Project::new()],
+            projects: vec![Project::empty()],
         }
     }
 }
 
+pub enum IndexLevel {
+    Shallow,
+    Deep,
+}
+
 impl ProjectList {
-    pub fn store(&self) -> Result<(), std::io::Error> {
+    pub fn save(&self) -> Result<(), std::io::Error> {
         std::fs::write(
             Path::new(
                 &(BaseDirs::new()
@@ -69,14 +67,66 @@ impl ProjectList {
             serde_json::to_string_pretty(&self).unwrap(),
         )
     }
+
+    pub fn load(mut self, path: String) -> Result<Self, serde_json::Error> {
+        match serde_json::from_str::<ProjectList>(&path) {
+            Ok(project_list) => {
+                self = project_list;
+                return Ok(self);
+            }
+            Err(e) => return Err(e),
+        }
+    }
+
+    pub fn index(mut self, level: Option<IndexLevel>, paths: Vec<PathBuf>) -> Self {
+        if let Some(level) = level {
+            match level {
+                IndexLevel::Shallow => {
+                    for path in paths {
+                        if !self
+                            .projects
+                            .clone()
+                            .into_iter()
+                            .map(|p| p.path)
+                            .collect::<Vec<_>>()
+                            .contains(&path.to_str().unwrap().to_owned())
+                        {
+                            self.projects.push(apply(path.to_str().unwrap().to_owned()));
+                        }
+                    }
+
+                    self.save().unwrap();
+                }
+                IndexLevel::Deep => {
+                    for path in paths {
+                        self.projects.push(apply(path.to_str().unwrap().to_owned()));
+                    }
+
+                    self.save().unwrap();
+                }
+            }
+        } else {
+            for path in paths {
+                self.projects.push(Project {
+                    path: path.to_str().unwrap().to_string(),
+                    theme: Theme::empty(),
+                    language: "".to_string(),
+                });
+            }
+        }
+
+        self
+    }
 }
 
 pub fn get_project_list(
-    entries: Vec<PathBuf>,
+    paths: Vec<PathBuf>,
     force_deep_sync: bool,
     config: &Configuration,
 ) -> ProjectList {
-    match read(Path::new(
+    let project_list = ProjectList::empty();
+
+    match std::fs::read_to_string(Path::new(
         &(BaseDirs::new()
             .unwrap()
             .home_dir()
@@ -85,85 +135,26 @@ pub fn get_project_list(
             .to_string()
             + PROJECT_STORE_LOCATION),
     )) {
-        Some(_) => {
+        Ok(path) => match project_list.load(path) {
+            Ok(list) => {
+                if !config.icons {
+                    return list.index(None, paths);
+                } else if force_deep_sync {
+                    return list.index(Some(IndexLevel::Deep), paths);
+                } else {
+                    return list.index(Some(IndexLevel::Shallow), paths);
+                }
+            }
+            Err(_) => return ProjectList::empty(),
+        },
+        Err(_) => {
             if !config.icons {
-                return no_sync(entries);
-            } else if force_deep_sync {
-                return deep_sync(entries);
+                project_list.index(None, paths)
             } else {
-                return shallow_sync(entries);
+                project_list.index(Some(IndexLevel::Deep), paths)
             }
         }
-        None => {
-            if !config.icons {
-                return no_sync(entries);
-            } else {
-                return deep_sync(entries);
-            }
-        }
-    };
-}
-
-pub fn no_sync(entries: Vec<PathBuf>) -> ProjectList {
-    let mut store = ProjectList::new();
-
-    for entry in entries {
-        store.projects.push(Project {
-            path: entry.to_str().unwrap().to_owned(),
-            theme: Theme {
-                icon: " ".to_string(),
-                color: WHITE,
-            },
-            language: "".to_string(),
-        })
     }
-
-    store
-}
-
-pub fn shallow_sync(entries: Vec<PathBuf>) -> ProjectList {
-    let mut current_list: ProjectList = read(Path::new(
-        &(BaseDirs::new()
-            .unwrap()
-            .home_dir()
-            .to_str()
-            .unwrap()
-            .to_string()
-            + PROJECT_STORE_LOCATION),
-    ))
-    .unwrap();
-
-    for entry in entries {
-        if !current_list
-            .projects
-            .clone()
-            .into_iter()
-            .map(|p| p.path)
-            .collect::<Vec<_>>()
-            .contains(&entry.to_str().unwrap().to_owned())
-        {
-            current_list
-                .projects
-                .push(apply(entry.to_str().unwrap().to_owned()));
-        }
-    }
-
-    current_list.store().unwrap();
-
-    current_list
-}
-
-pub fn deep_sync(entries: Vec<PathBuf>) -> ProjectList {
-    let mut list = ProjectList::new();
-
-    for entry in entries {
-        list.projects
-            .push(apply(entry.to_str().unwrap().to_owned()));
-    }
-
-    list.store().unwrap();
-
-    list
 }
 
 pub fn get_project_paths(config: &Configuration) -> Result<Vec<PathBuf>, std::io::Error> {
@@ -174,7 +165,7 @@ pub fn get_project_paths(config: &Configuration) -> Result<Vec<PathBuf>, std::io
         .unwrap()
         .to_string()
         + "/"
-        + &config.directory; // also bad
+        + &config.directory;
 
     let target_dir = Path::new(&home_dir);
 

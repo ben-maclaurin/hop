@@ -2,7 +2,7 @@ use std::path::Path;
 
 use crate::backend::{
     linguist::{get_git_language_of_path, Language},
-    project::{New, Project},
+    project::{Empty, Project},
 };
 use serde_derive::{Deserialize, Serialize};
 
@@ -21,8 +21,8 @@ pub trait Definition {
 
 pub const WHITE: (u8, u8, u8) = (220, 215, 186);
 
-impl New for Theme {
-    fn new() -> Self {
+impl Empty for Theme {
+    fn empty() -> Self {
         Self {
             icon: " ".to_string(),
             color: WHITE,

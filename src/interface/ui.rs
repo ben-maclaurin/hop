@@ -116,7 +116,7 @@ impl App {
             items: StatefulList::with_items(
                 get_project_list(entries.clone(), force_deep_sync, config).projects,
                 get_project_list(entries, force_deep_sync, config).projects,
-            ), 
+            ),
             input: String::new(),
             input_mode: default_mode,
         }
