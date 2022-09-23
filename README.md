@@ -2,7 +2,7 @@
 
 Hop is a very minimal [TUI](https://github.com/fdehau/tui-rs)-based project viewer. Loosely inpsired by [Projectile for Emacs](https://github.com/bbatsov/projectile), although nowhere near as feature-complete.
 
-https://user-images.githubusercontent.com/54992484/191871726-57dd6f16-7a2b-4d91-bbfd-f856b139b6f2.mp4
+https://user-images.githubusercontent.com/54992484/191971020-05de3fa3-1f0d-4cfc-a0eb-61538e2c48af.mp4
 
 ## Features
 
@@ -10,7 +10,6 @@ https://user-images.githubusercontent.com/54992484/191871726-57dd6f16-7a2b-4d91-
 - Uses Vim-based scrolling and list navigation.
 - Search for projects by language (e.g. `rust` or `go`).
 - Support for language tagging and icons (see: [Languages and Icons](https://github.com/ben-maclaurin/hop#languages-and-icons))
-- Quickly exit with `:wq`
 
 ## Installation
 
@@ -26,9 +25,9 @@ Navigation is Vim-based (`j` to go down, `k` to go up).
 
 Press the `RETURN` key on a project to open it in your favourite editor.
 
-Running Hop with the `sync` flag (e.g. `hop -s`) will initiate a sync (Hop will re-index all of your projects). Read more in [Languages and Icons](https://github.com/ben-maclaurin/hop#languages-and-icons)
+Running Hop with the `sync` flag (e.g. `hop -s`) will initiate a sync (Hop will re-index all of your projects). Read more in [Languages and Icons](https://github.com/ben-maclaurin/hop#languages-and-icons).
 
-You can quickly exit Hop in any mode with `:wq`.
+Use the `ESCAPE` key to exit Hop in any mode.
 
 ## Configuration
 
