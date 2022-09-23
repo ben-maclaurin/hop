@@ -41,6 +41,7 @@ The following options are available:
 | `include_files`   | If enabled, includes files as projects                                                                                                     | `false`     |
 | `show_search`     | When enabled, displays a search bar below the project list                                                                                 | `true`      |
 | `start_in_insert` | Determines if Hop should start in `insert mode` (search bar focused)                                                                       | `true`      |
+| `highlight_symbol`| Modifies the highlight symbol                                                                                                              | `""`        |
 
 ## Languages and Icons
 
