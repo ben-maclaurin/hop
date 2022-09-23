@@ -28,7 +28,7 @@ Press the `RETURN` key on a project to open it in your favourite editor.
 
 Running Hop with the `sync` flag (e.g. `hop -s`) will initiate a sync (Hop will re-index all of your projects). Read more in [Languages and Icons](https://github.com/ben-maclaurin/hop#languages-and-icons)
 
-You can quickly exit hop in any mode with `:wq`.
+You can quickly exit Hop in any mode with `:wq`.
 
 ## Configuration
 
