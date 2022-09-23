@@ -1,4 +1,4 @@
-# Hop
+# 🐇 Hop
 
 Hop is a very minimal [TUI](https://github.com/fdehau/tui-rs)-based project viewer. Loosely inpsired by [Projectile for Emacs](https://github.com/bbatsov/projectile), although nowhere near as feature-complete.
 
