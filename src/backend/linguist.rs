@@ -1,5 +1,7 @@
 use std::{path::Path, process::Command, process::Output, str::from_utf8};
 
+use super::project::Empty;
+
 pub enum Language {
     Rust,
     TypeScript,
@@ -21,6 +23,13 @@ pub enum Language {
     PHP,
     Unspecified,
 }
+
+impl Language {}
+
+// impl Empty for Language {
+//     fn empty() -> Self {
+//     }
+// }
 
 pub fn get_git_language_of_path(path: &Path) -> (Language, String) {
     if path.is_dir() {

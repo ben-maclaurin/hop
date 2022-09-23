@@ -41,7 +41,7 @@ impl Empty for Project {
 impl Empty for ProjectList {
     fn empty() -> Self {
         Self {
-            projects: vec![Project::empty()],
+            projects: vec![],
         }
     }
 }
