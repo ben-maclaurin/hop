@@ -21,37 +21,64 @@ pub struct Project {
 }
 
 #[derive(Deserialize, Serialize, Debug)]
-pub struct Store {
+pub struct ProjectList {
     pub projects: Vec<Project>,
 }
 
-pub fn read(path: &Path) -> Option<Store> {
+pub fn read(path: &Path) -> Option<ProjectList> {
     match std::fs::read_to_string(&path) {
-        Ok(string) => Some(serde_json::from_str::<Store>(&string).unwrap()),
+        Ok(string) => Some(serde_json::from_str::<ProjectList>(&string).unwrap()),
         Err(_) => None,
     }
 }
 
-pub fn store(store: Store) -> Result<(), std::io::Error> {
-    std::fs::write(
-        Path::new(
-            &(BaseDirs::new()
-                .unwrap()
-                .home_dir()
-                .to_str()
-                .unwrap()
-                .to_string()
-                + PROJECT_STORE_LOCATION),
-        ),
-        serde_json::to_string_pretty(&store).unwrap(),
-    )
+trait New {
+    fn new() -> Self;
 }
 
-pub fn get_projects(
+impl New for Project {
+    fn new() -> Self {
+        Self {
+            path: "".to_string(),
+            theme: Theme {
+                icon: " ".to_string(),
+                color: WHITE,
+            },
+            language: "".to_string(),
+        }
+    }
+}
+
+impl New for ProjectList {
+    fn new() -> Self {
+        Self {
+            projects: vec!(Project::new())
+        }
+    }
+}
+
+impl ProjectList {
+    pub fn store(&self) -> Result<(), std::io::Error> {
+        std::fs::write(
+            Path::new(
+                &(BaseDirs::new()
+                    .unwrap()
+                    .home_dir()
+                    .to_str()
+                    .unwrap()
+                    .to_string()
+                    + PROJECT_STORE_LOCATION),
+            ),
+            serde_json::to_string_pretty(&self).unwrap(),
+        )
+    }
+}
+
+pub fn get_project_list(
     entries: Vec<PathBuf>,
     force_deep_sync: bool,
     config: &Configuration,
-) -> Vec<Project> {
+) -> ProjectList {
     match read(Path::new(
         &(BaseDirs::new()
             .unwrap()
@@ -80,11 +107,11 @@ pub fn get_projects(
     };
 }
 
-pub fn no_sync(entries: Vec<PathBuf>) -> Vec<Project> {
-    let mut projects = Vec::<Project>::new();
+pub fn no_sync(entries: Vec<PathBuf>) -> ProjectList {
+    let mut store = ProjectList::new();
 
     for entry in entries {
-        projects.push(Project {
+        store.projects.push(Project {
             path: entry.to_str().unwrap().to_owned(),
             theme: Theme {
                 icon: " ".to_string(),
@@ -94,13 +121,11 @@ pub fn no_sync(entries: Vec<PathBuf>) -> Vec<Project> {
         })
     }
 
-    projects
+    store
 }
 
-// I don't like the amount of "cloning" in this function.
-// Can it be improved?
-pub fn shallow_sync(entries: Vec<PathBuf>) -> Vec<Project> {
-    let mut current_store: Store = read(Path::new(
+pub fn shallow_sync(entries: Vec<PathBuf>) -> ProjectList {
+    let mut current_list: ProjectList = read(Path::new(
         &(BaseDirs::new()
             .unwrap()
             .home_dir()
@@ -112,7 +137,7 @@ pub fn shallow_sync(entries: Vec<PathBuf>) -> Vec<Project> {
     .unwrap();
 
     for entry in entries {
-        if !current_store
+        if !current_list
             .projects
             .clone()
             .into_iter()
@@ -120,33 +145,27 @@ pub fn shallow_sync(entries: Vec<PathBuf>) -> Vec<Project> {
             .collect::<Vec<_>>()
             .contains(&entry.to_str().unwrap().to_owned())
         {
-            current_store
+            current_list
                 .projects
                 .push(apply(entry.to_str().unwrap().to_owned()));
         }
     }
 
-    store(Store {
-        projects: current_store.projects.clone(),
-    })
-    .unwrap();
+    current_list.store().unwrap();
 
-    current_store.projects
+    current_list
 }
 
-pub fn deep_sync(entries: Vec<PathBuf>) -> Vec<Project> {
-    let mut projects = Vec::<Project>::new();
+pub fn deep_sync(entries: Vec<PathBuf>) -> ProjectList {
+    let mut list = ProjectList::new(); 
 
     for entry in entries {
-        projects.push(apply(entry.to_str().unwrap().to_owned()));
+        list.projects.push(apply(entry.to_str().unwrap().to_owned()));
     }
 
-    store(Store {
-        projects: projects.clone(),
-    })
-    .unwrap();
+    list.store().unwrap();
 
-    projects
+    list
 }
 
 pub fn get_project_paths(config: &Configuration) -> Result<Vec<PathBuf>, std::io::Error> {
