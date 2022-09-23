@@ -66,7 +66,7 @@ Currently supported languages:
 - EmacsLisp
 - Go
 - Lua
-- CPlusPlus
+- C++
 - CSS
 
 ## Themes
