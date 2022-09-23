@@ -99,6 +99,11 @@ pub struct App {
 impl App {
     pub fn new(mut entries: Vec<PathBuf>, config: &Configuration, force_deep_sync: bool) -> App {
         println!("Generating icons for projects directory ...");
+        let mut default_mode: InputMode = InputMode::Editing;
+
+        if !config.start_in_insert {
+            default_mode = InputMode::Normal;
+        }
 
         if !config.include_files {
             entries = entries.into_iter().filter(|entry| entry.is_dir()).collect();
@@ -106,13 +111,14 @@ impl App {
 
         print!("{}[2J", 27 as char);
 
+
         App {
             items: StatefulList::with_items(
                 get_projects(entries.clone(), force_deep_sync, config),
                 get_projects(entries, force_deep_sync, config),
             ), // items used here
             input: String::new(),
-            input_mode: InputMode::Editing,
+            input_mode: default_mode,
         }
     }
 }

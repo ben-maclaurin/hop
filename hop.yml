@@ -1,7 +1,8 @@
 # Example config file
 
 directory: "Developer" # Starts at $HOME, so this would resolve to ~/Developer/
-title: "Projects" # default: "Hop"
 icons: "true" # default: false
 editor: "nvim" # default: "code" 
 include_files: "false" # default: false
+show_search: "true" # default: true
+start_in_insert: "true" #default: true

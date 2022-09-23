@@ -13,6 +13,7 @@ pub struct Configuration {
     pub icons: bool,
     pub include_files: bool,
     pub show_search: bool,
+    pub start_in_insert: bool,
 }
 
 impl Default for Configuration {
@@ -23,6 +24,7 @@ impl Default for Configuration {
             icons: false,
             include_files: false,
             show_search: true,
+            start_in_insert: true,
         }
     }
 }
@@ -57,6 +59,7 @@ impl Configuration {
                 "icons" => self.icons = resolve_bool(value),
                 "include_files" => self.include_files = resolve_bool(value),
                 "show_search" => self.show_search = resolve_bool(value),
+                "start_in_insert" => self.start_in_insert = resolve_bool(value),
                 _ => self.editor = value,
             }
         }
