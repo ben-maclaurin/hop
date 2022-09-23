@@ -73,7 +73,7 @@ Currently supported languages:
 
 ## Themes
 
-The existing theme is based on [Kanagawa](https://github.com/rebelot/kanagawa.nvim). I plan to add additional themes and/or support for customising.
+The existing theme is based on [Kanagawa](https://github.com/rebelot/kanagawa.nvim). I plan to add additional themes and/or support for customising. See [theme.rs](https://github.com/ben-maclaurin/hop/blob/main/src/interface/theme.rs) for an example of theme implementation.
 
 ## Credits
 
