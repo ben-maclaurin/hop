@@ -4,6 +4,13 @@ Hop is a [TUI](https://github.com/fdehau/tui-rs)-based project viewer. Inpsired 
 
 https://user-images.githubusercontent.com/54992484/191871726-57dd6f16-7a2b-4d91-bbfd-f856b139b6f2.mp4
 
+## Features
+
+- Interactive TUI for viewing and opening projects from the command line.
+- Uses Vim-based scrolling and list navigation.
+- Search for projects by language (e.g. `rust` or `go`).
+- Support for language tagging and icons (see: [Languages and Icons](https://github.com/ben-maclaurin/hop#languages-and-icons))
+
 ## Installation
 
 1. Download the release. 
@@ -60,6 +67,19 @@ Currently supported languages:
 - Lua
 - CPlusPlus
 - CSS
+
+## Themes
+
+The existing theme is based on [Kanagawa](https://github.com/rebelot/kanagawa.nvim). I plan to add additional themes and/or support for customising.
+
+## Credits
+
+- [tui-rs](https://github.com/fdehau/tui-rs)
+- [crossterm](https://github.com/crossterm-rs/crossterm)
+- [config-rs](https://github.com/mehcode/config-rs)
+- [directories-rs](https://github.com/dirs-dev/directories-rs)
+- [Nerd Fonts](https://www.nerdfonts.com/)
+- [GitHub Linguist](https://github.com/github/linguist)
 
 ## Contributing
 
