@@ -31,7 +31,7 @@ Use the `ESCAPE` key to exit Hop in any mode.
 
 ## Configuration
 
-Hop expects your configration file to be stored at `$HOME/.config/hop/hop.yml`. See [hop.yml](https://github.com/ben-maclaurin/hop/blob/main/hop.yml) for an example configuration.
+Hop expects your configration file to be stored at `$HOME/.config/hop/hop.yml`. Check [my dotfiles](https://github.com/ben-maclaurin/dotfiles/blob/main/hop/hop.yml) for an example configuration.
 
 The following options are available:
 
