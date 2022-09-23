@@ -51,7 +51,7 @@ To display languages and icons, your terminal or emulator font should be a [Nerd
 
 If you have `icons` enabled, the first time you run Hop it may take a few minutes to index all of your projects. Hop keeps track of previously indexed projects in a `.json` file. This reduces start times for future executions. 
 
-If the dominant language of a project changes, you can update this manually in the `.json` or resync your project list with `hop -s`.
+If the dominant language of a project changes, you can update this manually in `$HOME/.config/hop/projects.json` or resync your project list with `hop -s`.
 
 Currently supported languages:
 
