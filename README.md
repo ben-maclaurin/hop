@@ -2,7 +2,7 @@
 
 Hop is a very minimal [TUI](https://github.com/fdehau/tui-rs)-based project viewer. Loosely inpsired by [Projectile for Emacs](https://github.com/bbatsov/projectile), although nowhere near as feature-complete.
 
-https://user-images.githubusercontent.com/54992484/191871726-57dd6f16-7a2b-4d91-bbfd-f856b139b6f2.mp4
+https://user-images.githubusercontent.com/54992484/191979334-978b73d2-60b9-4c0b-ba39-7978961f7a92.mp4
 
 ## Features
 
@@ -10,13 +10,12 @@ https://user-images.githubusercontent.com/54992484/191871726-57dd6f16-7a2b-4d91-
 - Uses Vim-based scrolling and list navigation.
 - Search for projects by language (e.g. `rust` or `go`).
 - Support for language tagging and icons (see: [Languages and Icons](https://github.com/ben-maclaurin/hop#languages-and-icons))
-- Quickly exit with `:wq`
 
 ## Installation
 
 1. Download the release. 
 2. Store the binary in a location of your choosing.
-3. Add the binary to your PATH. 
+3. Add the binary to your `PATH`. 
 
 ## Usage
 
@@ -28,11 +27,11 @@ Press the `RETURN` key on a project to open it in your favourite editor.
 
 Running Hop with the `sync` flag (e.g. `hop -s`) will initiate a sync (Hop will re-index all of your projects). Read more in [Languages and Icons](https://github.com/ben-maclaurin/hop#languages-and-icons)
 
-You can quickly exit Hop in any mode with `:wq`.
+Use `ESCAPE` to exit Hop in any mode.
 
 ## Configuration
 
-Hop expects your configration file to be stored at `$HOME/.config/hop/hop.yml`. See [hop.yml](https://github.com/ben-maclaurin/hop/blob/main/hop.yml) for an example configuration.
+Hop expects your configration file to be stored at `$HOME/.config/hop/hop.yml`. See these [dotfiles](https://github.com/ben-maclaurin/dotfiles/blob/main/hop/hop.yml) for an example configuration.
 
 The following options are available:
 
@@ -52,7 +51,7 @@ To display languages and icons, your terminal or emulator font should be a [Nerd
 
 If you have `icons` enabled, the first time you run Hop it may take a few minutes to index all of your projects. Hop keeps track of previously indexed projects in a `.json` file. This reduces start times for future executions. 
 
-If the dominant language of a project changes, you can update this manually in the `.json` or resync your project list with `hop -s`.
+If the primary language of a project changes, you can update this manually in `$HOME/.config/hop/projects.json` or force Hop to reindex with `hop -s`.
 
 Currently supported languages:
 
