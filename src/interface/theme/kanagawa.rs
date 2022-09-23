@@ -1,11 +1,11 @@
 use crate::backend::linguist::Language;
 
-use super::{Theme, Definition, WHITE};
+use super::{Definition, Theme, WHITE};
 
 pub struct Kanagawa;
 
 impl Definition for Kanagawa {
-    fn init(language: Language) -> Theme {
+    fn load(language: Language) -> Theme {
         match language {
             Language::Rust => {
                 return Theme {
@@ -124,4 +124,3 @@ impl Definition for Kanagawa {
         }
     }
 }
-

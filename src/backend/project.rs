@@ -32,7 +32,7 @@ pub fn read(path: &Path) -> Option<ProjectList> {
     }
 }
 
-trait New {
+pub trait New {
     fn new() -> Self;
 }
 
@@ -40,10 +40,7 @@ impl New for Project {
     fn new() -> Self {
         Self {
             path: "".to_string(),
-            theme: Theme {
-                icon: " ".to_string(),
-                color: WHITE,
-            },
+            theme: Theme::new(),
             language: "".to_string(),
         }
     }
@@ -52,7 +49,7 @@ impl New for Project {
 impl New for ProjectList {
     fn new() -> Self {
         Self {
-            projects: vec!(Project::new())
+            projects: vec![Project::new()],
         }
     }
 }
@@ -157,10 +154,11 @@ pub fn shallow_sync(entries: Vec<PathBuf>) -> ProjectList {
 }
 
 pub fn deep_sync(entries: Vec<PathBuf>) -> ProjectList {
-    let mut list = ProjectList::new(); 
+    let mut list = ProjectList::new();
 
     for entry in entries {
-        list.projects.push(apply(entry.to_str().unwrap().to_owned()));
+        list.projects
+            .push(apply(entry.to_str().unwrap().to_owned()));
     }
 
     list.store().unwrap();

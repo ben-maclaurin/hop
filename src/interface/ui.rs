@@ -48,7 +48,8 @@ impl StatefulList {
                 x.path
                     .to_lowercase()
                     .as_str()
-                    .contains(input.to_lowercase().as_str()) || x.language.as_str().contains(input.to_lowercase().as_str())
+                    .contains(input.to_lowercase().as_str())
+                    || x.language.as_str().contains(input.to_lowercase().as_str())
             })
             .collect();
 
@@ -111,12 +112,11 @@ impl App {
 
         print!("{}[2J", 27 as char);
 
-
         App {
             items: StatefulList::with_items(
                 get_project_list(entries.clone(), force_deep_sync, config).projects,
                 get_project_list(entries, force_deep_sync, config).projects,
-            ), // items used here
+            ), 
             input: String::new(),
             input_mode: default_mode,
         }
@@ -124,7 +124,8 @@ impl App {
 }
 
 pub fn ui<B: Backend>(f: &mut Frame<B>, app: &mut App, config: &Configuration) {
-    let mut sizes: (Constraint, Constraint) = (Constraint::Percentage(92), Constraint::Percentage(8));
+    let mut sizes: (Constraint, Constraint) =
+        (Constraint::Percentage(92), Constraint::Percentage(8));
 
     if !config.show_search {
         sizes = (Constraint::Percentage(100), Constraint::Percentage(8));
