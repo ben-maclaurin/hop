@@ -7,7 +7,8 @@ use crate::backend::{
 use serde_derive::{Deserialize, Serialize};
 
 pub mod kanagawa;
-use kanagawa::Kanagawa;
+pub mod tokyonight;
+use tokyonight::TokyoNight;
 
 #[derive(Deserialize, Serialize, Debug, Clone, PartialEq)]
 pub struct Theme {
@@ -19,7 +20,7 @@ pub trait Definition {
     fn load(lanauge: &LanguageType) -> Theme;
 }
 
-pub const WHITE: (u8, u8, u8) = (220, 215, 186);
+pub const WHITE: (u8, u8, u8) = (192, 202, 245);
 
 impl Empty for Theme {
     fn empty() -> Self {
@@ -33,7 +34,7 @@ impl Empty for Theme {
 pub fn apply(path: String) -> Project {
     let language = detect_language(Path::new(&path));
 
-    let theme = Kanagawa::load(&language.language);
+    let theme = TokyoNight::load(&language.language);
 
     Project {
         path,

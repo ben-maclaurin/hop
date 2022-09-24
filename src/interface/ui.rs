@@ -155,11 +155,7 @@ pub fn ui<B: Backend>(f: &mut Frame<B>, app: &mut App, config: &Configuration) {
                         .last()
                         .unwrap()
                         .to_string(),
-                Style::default().fg(Color::Rgb(
-                    project.theme.color.0,
-                    project.theme.color.1,
-                    project.theme.color.2,
-                )),
+                Style::default().fg(Color::Rgb(project.theme.color.0, project.theme.color.1, project.theme.color.2)),
             )])])
         })
         .collect();
@@ -177,7 +173,7 @@ pub fn ui<B: Backend>(f: &mut Frame<B>, app: &mut App, config: &Configuration) {
     let input = Paragraph::new(app.input.as_ref())
         .style(match app.input_mode {
             InputMode::Normal => Style::default(),
-            InputMode::Editing => Style::default().fg(Color::White),
+            InputMode::Editing => Style::default().fg(Color::Yellow),
         })
         .block(Block::default().borders(Borders::ALL).title("Search"));
 
